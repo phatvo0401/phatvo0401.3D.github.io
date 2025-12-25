@@ -69,7 +69,6 @@
         #backToTop.show { opacity: 1; visibility: visible; }
         #backToTop:hover { background: var(--miku); color: #050a09; }
 
-        /* CONTACT SECTION - 100% LIKE MAIN */
         .social-link { display: inline-block; transition: all 0.3s ease; color: #4a5d71; letter-spacing: 0.3em; }
         .social-link:hover { color: var(--miku); text-shadow: 0 0 8px var(--miku); transform: translateY(-3px); }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -141,6 +140,7 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+        // --- MOUSE CURSOR ---
         const cursor = document.getElementById('cursor-follower');
         document.addEventListener('mousemove', (e) => {
             cursor.style.display = 'block';
@@ -148,6 +148,7 @@
             cursor.style.top = e.clientY + 'px';
         });
 
+        // --- LOADER ---
         const loaderNum = document.getElementById('loader-num');
         const loaderProgress = document.getElementById('loader-progress');
         let progress = 0;
@@ -161,11 +162,13 @@
             loaderNum.innerText = progress.toString().padStart(2, '0');
         }, 60);
 
+        // --- CLOCK ---
         function updateClock() { 
             document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' }).toUpperCase(); 
         }
         setInterval(updateClock, 1000); updateClock();
 
+        // --- 3D ENGINE ---
         const myModels = [
             { id: 'm1', name: 'Con Cụt', file: 'model.stl', desc: '3D Artist: AI' },
             { id: 'm2', name: 'Con Gót', file: 'model2.stl', desc: '3D Artist: AI' },
@@ -184,14 +187,16 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
-            // TẠO NHÓM ĐỂ XOAY CHUNG CẢ MODEL VÀ GRID
+            // --- TẠO NHÓM ĐỂ QUAY CHUNG ---
             const rotationGroup = new THREE.Group();
             scene.add(rotationGroup);
 
+            // Polar Grid (Đế) - Add vào nhóm quay
             const circleGrid = new THREE.PolarGridHelper(35, 16, 8, 64, 0x39c5bb, 0x111111);
             circleGrid.position.y = -22; 
-            circleGrid.material.opacity = 0.2; circleGrid.material.transparent = true;
-            rotationGroup.add(circleGrid); // Add vào nhóm xoay
+            circleGrid.material.opacity = 0.2; 
+            circleGrid.material.transparent = true;
+            rotationGroup.add(circleGrid);
 
             const sun = new THREE.DirectionalLight(0x39c5bb, 2.5);
             sun.position.set(20, 50, 20);
@@ -207,23 +212,36 @@
             controls.maxPolarAngle = fixedAngle;
 
             new STLLoader().load(path, (geo) => {
+                // 1. Căn tâm hình học cho Geometry
                 geo.center(); 
+
                 const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: 0x39c5bb, specular: 0x111111, shininess: 80 }));
                 
-                // Điều chỉnh rotation của mesh để model đứng thẳng trong group
+                // 2. Xoay mesh để model đứng thẳng (STL thường ngược trục)
                 mesh.rotation.x = -Math.PI / 2;
                 
-                const size = new THREE.Vector3(); 
-                geo.computeBoundingBox();
-                geo.boundingBox.getSize(size);
-                const scale = 48 / Math.max(size.x, size.y, size.z);
+                // 3. Tính toán Scale dựa trên kích thước thực tế
+                const box = new THREE.Box3().setFromObject(mesh);
+                const size = new THREE.Vector3();
+                box.getSize(size);
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 48 / maxDim;
                 mesh.scale.set(scale, scale, scale);
-                
-                rotationGroup.add(mesh); // Add vào nhóm xoay chung với grid
+
+                // 4. CĂN CHỈNH VÀO GIỮA KHUNG
+                // Tính lại box sau khi đã scale để đưa trọng tâm về (0,0,0)
+                const centeredBox = new THREE.Box3().setFromObject(mesh);
+                const center = new THREE.Vector3();
+                centeredBox.getCenter(center);
+                mesh.position.sub(center); // Dịch chuyển mesh để tâm trùng với tâm của Group
+
+                // Thêm mesh vào nhóm quay chung với đế
+                rotationGroup.add(mesh);
                 
                 function animate() { 
                     requestAnimationFrame(animate); 
-                    rotationGroup.rotation.y += 0.005; // Xoay cả nhóm trên trục Y
+                    // Quay cả Group trên trục Y thay vì quay mesh lẻ loi
+                    rotationGroup.rotation.y += 0.005; 
                     controls.update(); 
                     renderer.render(scene, camera); 
                 }
