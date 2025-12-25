@@ -17,14 +17,12 @@
 
         a, button, canvas, .viewport-card { cursor: none !important; }
 
-        /* --- CURSOR (FIXED SIZE) --- */
         #cursor-follower {
             width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
             position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999;
             transform: translate(-50%, -50%); background: rgba(57, 197, 187, 0.1); display: none;
         }
 
-        /* --- LOADER --- */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050a09; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -35,7 +33,6 @@
         #loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--miku); transition: width 0.2s ease; }
         .loader-percentage { font-family: monospace; font-size: 6rem; font-weight: 900; color: var(--miku); opacity: 0.15; position: absolute; bottom: 5%; right: 5%; line-height: 1; }
 
-        /* --- NAV LINK --- */
         .nav-link {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             padding: 8px 25px; 
@@ -63,7 +60,6 @@
         }
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; }
         
-        /* --- BACK TO TOP --- */
         #backToTop { 
             position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; 
             background: rgba(57, 197, 187, 0.1); border: 1px solid var(--miku); color: var(--miku); 
@@ -73,7 +69,7 @@
         #backToTop.show { opacity: 1; visibility: visible; }
         #backToTop:hover { background: var(--miku); color: #050a09; }
 
-        /* --- CONTACT SECTION (COPIED 100% FROM MAIN) --- */
+        /* CONTACT SECTION - 100% LIKE MAIN */
         .social-link { display: inline-block; transition: all 0.3s ease; color: #4a5d71; letter-spacing: 0.3em; }
         .social-link:hover { color: var(--miku); text-shadow: 0 0 8px var(--miku); transform: translateY(-3px); }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -145,7 +141,6 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- MOUSE CURSOR ---
         const cursor = document.getElementById('cursor-follower');
         document.addEventListener('mousemove', (e) => {
             cursor.style.display = 'block';
@@ -153,7 +148,6 @@
             cursor.style.top = e.clientY + 'px';
         });
 
-        // --- LOADER ---
         const loaderNum = document.getElementById('loader-num');
         const loaderProgress = document.getElementById('loader-progress');
         let progress = 0;
@@ -167,13 +161,11 @@
             loaderNum.innerText = progress.toString().padStart(2, '0');
         }, 60);
 
-        // --- CLOCK ---
         function updateClock() { 
             document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' }).toUpperCase(); 
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // --- 3D ENGINE ---
         const myModels = [
             { id: 'm1', name: 'Con Cụt', file: 'model.stl', desc: '3D Artist: AI' },
             { id: 'm2', name: 'Con Gót', file: 'model2.stl', desc: '3D Artist: AI' },
@@ -192,10 +184,14 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
+            // TẠO NHÓM ĐỂ XOAY CHUNG CẢ MODEL VÀ GRID
+            const rotationGroup = new THREE.Group();
+            scene.add(rotationGroup);
+
             const circleGrid = new THREE.PolarGridHelper(35, 16, 8, 64, 0x39c5bb, 0x111111);
             circleGrid.position.y = -22; 
             circleGrid.material.opacity = 0.2; circleGrid.material.transparent = true;
-            scene.add(circleGrid);
+            rotationGroup.add(circleGrid); // Add vào nhóm xoay
 
             const sun = new THREE.DirectionalLight(0x39c5bb, 2.5);
             sun.position.set(20, 50, 20);
@@ -206,16 +202,15 @@
             controls.minDistance = 65; 
             controls.maxDistance = 150; 
             
-            // CỐ ĐỊNH TRỤC DỌC Ở GÓC 35 ĐỘ
             const fixedAngle = 0.96; 
             controls.minPolarAngle = fixedAngle;
             controls.maxPolarAngle = fixedAngle;
 
             new STLLoader().load(path, (geo) => {
-                // TỰ ĐỘNG CĂN CHỈNH MODEL Ở CHÍNH GIỮA
                 geo.center(); 
-
                 const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: 0x39c5bb, specular: 0x111111, shininess: 80 }));
+                
+                // Điều chỉnh rotation của mesh để model đứng thẳng trong group
                 mesh.rotation.x = -Math.PI / 2;
                 
                 const size = new THREE.Vector3(); 
@@ -224,8 +219,14 @@
                 const scale = 48 / Math.max(size.x, size.y, size.z);
                 mesh.scale.set(scale, scale, scale);
                 
-                scene.add(mesh);
-                function animate() { requestAnimationFrame(animate); mesh.rotation.z += 0.005; controls.update(); renderer.render(scene, camera); }
+                rotationGroup.add(mesh); // Add vào nhóm xoay chung với grid
+                
+                function animate() { 
+                    requestAnimationFrame(animate); 
+                    rotationGroup.rotation.y += 0.005; // Xoay cả nhóm trên trục Y
+                    controls.update(); 
+                    renderer.render(scene, camera); 
+                }
                 animate();
             });
         }
@@ -239,7 +240,6 @@
             init3D(m.id, m.file);
         });
 
-        // REVEAL ANIMATION FOR FOOTER
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
         }, { threshold: 0.1 });
@@ -251,4 +251,3 @@
     </script>
 </body>
 </html>
-
