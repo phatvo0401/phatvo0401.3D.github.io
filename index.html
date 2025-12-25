@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* THÊM BIẾN MÀU TÍM VÀ GRADIENT */
         :root { 
             --miku: #39c5bb; 
             --violet: #8b5cf6;
@@ -17,7 +16,6 @@
         
         body { 
             font-family: 'Lexend', sans-serif; background-color: #050a09; 
-            /* Gradient nền kết hợp cả 2 màu */
             background-image: 
                 radial-gradient(at 0% 0%, rgba(57, 197, 187, 0.08) 0px, transparent 50%), 
                 radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.06) 0px, transparent 50%);
@@ -27,11 +25,8 @@
 
         a, button, canvas, .viewport-card, svg, span { cursor: none !important; }
 
-        /* Cursor phối màu Gradient */
         #cursor-follower {
-            width: 20px; height: 20px; 
-            border: 2px solid var(--miku); 
-            border-radius: 50%;
+            width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
             position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999;
             transform: translate(-50%, -50%); 
             background: linear-gradient(45deg, rgba(57, 197, 187, 0.2), rgba(139, 92, 246, 0.2)); 
@@ -45,13 +40,7 @@
         }
         #loader.hidden { transform: translateY(-100%); opacity: 0; visibility: hidden; }
         .loader-bar-container { width: 150px; height: 2px; background: rgba(255, 255, 255, 0.05); position: relative; overflow: hidden; border-radius: 2px; }
-        
-        /* Progress bar Gradient */
-        #loader-progress { 
-            position: absolute; left: 0; top: 0; height: 100%; width: 0%; 
-            background: linear-gradient(90deg, var(--miku), var(--violet)); 
-            transition: width 0.2s ease; 
-        }
+        #loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: linear-gradient(90deg, var(--miku), var(--violet)); transition: width 0.2s ease; }
         .loader-percentage { font-family: monospace; font-size: 6rem; font-weight: 900; color: var(--miku); opacity: 0.1; position: absolute; bottom: 5%; right: 5%; line-height: 1; }
 
         .nav-link {
@@ -62,8 +51,7 @@
             display: inline-block;
         }
         .nav-link:hover { 
-            color: white !important;
-            border-color: var(--violet) !important;
+            color: white !important; border-color: var(--violet) !important;
             background: linear-gradient(90deg, rgba(57, 197, 187, 0.2), rgba(139, 92, 246, 0.2));
             box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
         }
@@ -73,7 +61,6 @@
             padding: 20px; transition: all 0.4s ease; backdrop-filter: blur(12px);
         }
         .viewport-card:hover { border-color: var(--violet); transform: translateY(-5px); }
-        
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; }
         
         #backToTop { 
@@ -128,11 +115,11 @@
         </div>
     </nav>
 
-    <header class="pt-56 pb-20 text-center">
-        <h1 class="text-5xl md:text-8xl font-black mb-4 uppercase italic tracking-tighter">
+    <header class="pt-64 pb-20 px-6 text-center w-full overflow-visible">
+        <h1 class="text-5xl md:text-8xl font-black mb-6 uppercase tracking-normal leading-tight">
             GALLERY <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#39c5bb] to-[#8b5cf6]">3D</span>
         </h1>
-        <p class="text-white/50 font-medium tracking-[0.5em] uppercase text-[9px] md:text-[11px]">Lưu trữ mô hình dự án cá nhân</p>
+        <p class="text-white/50 font-medium tracking-[0.5em] uppercase text-[9px] md:text-[11px] block">Lưu trữ mô hình dự án cá nhân</p>
     </header>
 
     <main class="flex justify-center pb-40 px-6">
@@ -210,19 +197,13 @@
             const rotationGroup = new THREE.Group();
             scene.add(rotationGroup);
 
-            // Grid màu tím nhạt
-            const circleGrid = new THREE.PolarGridHelper(35, 24, 12, 64, 0x8b5cf6, 0x111111);
+            // BỎ HỆ THỐNG ĐÈN - SỬ DỤNG MESHNORMALMATERIAL ĐỂ TỰ HIỂN THỊ MÀU
+            const gridColor = new THREE.Color(0x8b5cf6);
+            const circleGrid = new THREE.PolarGridHelper(35, 24, 12, 64, gridColor, 0x111111);
             circleGrid.position.y = -22; 
             circleGrid.material.opacity = 0.15; 
             circleGrid.material.transparent = true;
             rotationGroup.add(circleGrid);
-
-            // Đèn kết hợp Cyan và Violet
-            const light1 = new THREE.DirectionalLight(0x39c5bb, 2);
-            light1.position.set(20, 50, 20);
-            const light2 = new THREE.PointLight(0x8b5cf6, 1.5);
-            light2.position.set(-20, -10, 20);
-            scene.add(light1, light2, new THREE.AmbientLight(0xffffff, 0.4));
 
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
@@ -235,12 +216,8 @@
 
             new STLLoader().load(path, (geo) => {
                 geo.center(); 
-                // Vật liệu Mesh màu Miku nhưng phản chiếu ánh sáng Tím
-                const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ 
-                    color: 0x39c5bb, 
-                    specular: 0x8b5cf6, 
-                    shininess: 60 
-                }));
+                // VẬT LIỆU NORMAL: Không cần đèn, tự đổ màu theo hình khối
+                const mesh = new THREE.Mesh(geo, new THREE.MeshNormalMaterial());
                 mesh.rotation.x = -Math.PI / 2;
                 
                 const box = new THREE.Box3().setFromObject(mesh);
@@ -271,7 +248,6 @@
         myModels.forEach(m => {
             const card = document.createElement('div');
             card.className = 'viewport-card';
-            // Tên model dùng màu Miku
             card.innerHTML = `<div class="three-container" id="${m.id}"></div><div class="mt-8 flex justify-between items-end"><div><h3 class="font-black text-xl uppercase tracking-tighter text-[#39c5bb]">${m.name}</h3><p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">${m.desc}</p></div><div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full italic">VTP 3D</div></div>`;
             grid.appendChild(card);
             init3D(m.id, m.file);
