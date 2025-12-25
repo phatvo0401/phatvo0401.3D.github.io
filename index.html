@@ -17,11 +17,11 @@
 
         a, button, canvas, .viewport-card { cursor: none !important; }
 
-        /* --- CURSOR FIXED --- */
+        /* --- CURSOR (FIXED SIZE - NO SCALE) --- */
         #cursor-follower {
             width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
             position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999;
-            transition: transform 0.15s ease-out, background 0.3s; transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); /* Xóa transition transform để tránh delay/scale */
             background: rgba(57, 197, 187, 0.1); display: none;
         }
 
@@ -36,7 +36,7 @@
         #loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--miku); transition: width 0.2s ease; }
         .loader-percentage { font-family: monospace; font-size: 6rem; font-weight: 900; color: var(--miku); opacity: 0.15; position: absolute; bottom: 5%; right: 5%; line-height: 1; }
 
-        /* --- UI COMPONENTS --- */
+        /* --- NAV LINK --- */
         .nav-link {
             transition: all 0.3s ease; padding: 8px 25px; border-radius: 9999px; border: 1px solid rgba(57, 197, 187, 0.4); 
             color: var(--miku); background: rgba(57, 197, 187, 0.05); font-size: 10px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
@@ -49,6 +49,7 @@
         }
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; }
         
+        /* --- BACK TO TOP --- */
         #backToTop { 
             position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; 
             background: rgba(57, 197, 187, 0.1); border: 1px solid var(--miku); color: var(--miku); 
@@ -58,8 +59,17 @@
         #backToTop.show { opacity: 1; visibility: visible; }
         #backToTop:hover { background: var(--miku); color: #050a09; }
 
-        .contact-link { transition: all 0.4s ease; color: #4a5d71; letter-spacing: 0.4em; font-size: 11px; font-weight: 900; }
-        .contact-link:hover { color: var(--miku); text-shadow: 0 0 10px var(--miku); transform: translateY(-3px); }
+        /* --- CONTACT SECTION SYNC --- */
+        .contact-social-link {
+            font-size: 11px; font-weight: 900; letter-spacing: 0.3em; color: #4a5d71;
+            position: relative; transition: color 0.3s ease;
+        }
+        .contact-social-link:hover { color: var(--miku); }
+        .contact-social-link::after {
+            content: ''; position: absolute; width: 0; height: 1px; bottom: -4px; left: 0;
+            background-color: var(--miku); transition: width 0.3s ease;
+        }
+        .contact-social-link:hover::after { width: 100%; }
     </style>
 </head>
 <body>
@@ -107,18 +117,25 @@
     </main>
 
     <footer id="contact" class="py-32 text-center border-t border-[#39c5bb]/10 bg-[#050a09]">
-        <h3 class="text-2xl font-black mb-12 text-[#39c5bb] italic uppercase tracking-tight">Let's work together</h3>
-        <p class="text-xl font-bold mb-3 tracking-tight selection:bg-[#39c5bb] selection:text-black">phatvo.0401@gmail.com</p>
-        <p class="text-gray-500 text-[11px] uppercase tracking-[0.25em] mb-16 italic">038 477 2414 — CỦ CHI, TP. HỒ CHÍ MINH</p>
+        <h3 class="text-[12px] font-black mb-12 text-[#39c5bb] uppercase tracking-[0.4em]">Let's work together</h3>
         
-        <div class="flex flex-wrap justify-center gap-10 md:gap-20 mb-24 px-4">
-            <a href="https://www.facebook.com/phatvo.0401/" target="_blank" class="contact-link">FACEBOOK</a>
-            <a href="https://www.instagram.com/phatvo.0401/" target="_blank" class="contact-link">INSTAGRAM</a>
-            <a href="https://www.behance.net/phtthnh42" target="_blank" class="contact-link">BEHANCE</a>
+        <div class="mb-16">
+            <a href="mailto:phatvo.0401@gmail.com" class="text-2xl md:text-4xl font-bold tracking-tighter hover:text-[#39c5bb] transition-colors duration-300">
+                phatvo.0401@gmail.com
+            </a>
+            <p class="text-gray-500 text-[10px] uppercase tracking-[0.3em] mt-6 italic font-light">
+                038 477 2414 — CỦ CHI, TP. HỒ CHÍ MINH
+            </p>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-12 md:gap-24 mb-24 px-4">
+            <a href="https://www.facebook.com/phatvo.0401/" target="_blank" class="contact-social-link">FACEBOOK</a>
+            <a href="https://www.instagram.com/phatvo.0401/" target="_blank" class="contact-social-link">INSTAGRAM</a>
+            <a href="https://www.behance.net/phtthnh42" target="_blank" class="contact-social-link">BEHANCE</a>
         </div>
         
         <div class="pt-10 border-t border-white/5 mx-10">
-            <p class="text-slate-600 text-[9px] uppercase tracking-[0.5em] leading-loose">
+            <p class="text-slate-600 text-[9px] uppercase tracking-[0.5em] leading-[2.5]">
                 © 2025 VTP Design — 3D Archive Storage <br>
                 All Rights Reserved — Created by Võ Thành Phát
             </p>
@@ -134,25 +151,13 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- MOUSE CURSOR ---
+        // --- MOUSE CURSOR (NO SCALE LOGIC) ---
         const cursor = document.getElementById('cursor-follower');
         document.addEventListener('mousemove', (e) => {
             cursor.style.display = 'block';
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
-
-        function attachHover() {
-            // Chỉ áp dụng hiệu ứng phóng to cho các link và nút (A, BUTTON)
-            document.querySelectorAll('a, button').forEach(t => {
-                t.onmouseenter = () => cursor.style.transform = 'translate(-50%, -50%) scale(2.8)';
-                t.onmouseleave = () => cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-            });
-            // Card model giữ nguyên kích thước con trỏ
-            document.querySelectorAll('.viewport-card').forEach(t => {
-                t.onmouseenter = () => cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-            });
-        }
 
         // --- LOADER ---
         const loaderNum = document.getElementById('loader-num');
@@ -162,10 +167,7 @@
             progress += Math.floor(Math.random() * 5) + 2;
             if (progress >= 100) { 
                 progress = 100; clearInterval(loadInt); 
-                setTimeout(() => {
-                    document.getElementById('loader').classList.add('hidden');
-                    attachHover();
-                }, 500); 
+                setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500); 
             }
             loaderProgress.style.width = progress + '%';
             loaderNum.innerText = progress.toString().padStart(2, '0');
