@@ -7,11 +7,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --miku: #39c5bb; --glass: rgba(255, 255, 255, 0.03); --border: rgba(57, 197, 187, 0.2); }
+        :root { 
+            --miku: #39c5bb; 
+            --violet: #8b5cf6;
+            --glass: rgba(255, 255, 255, 0.03); 
+            --border: rgba(57, 197, 187, 0.2); 
+        }
         
         body { 
             font-family: 'Lexend', sans-serif; background-color: #050a09; 
-            background-image: radial-gradient(at 0% 0%, rgba(57, 197, 187, 0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(57, 197, 187, 0.05) 0px, transparent 50%);
+            /* KẾT HỢP XANH MIKU VÀ TÍM ĐIỆN VÀO NỀN */
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(57, 197, 187, 0.1) 0px, transparent 50%), 
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.07) 0px, transparent 50%);
             background-attachment: fixed; color: #e6f7f6; overflow-x: hidden; 
             cursor: none !important; 
         }
@@ -21,7 +29,9 @@
         #cursor-follower {
             width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
             position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999;
-            transform: translate(-50%, -50%); background: rgba(57, 197, 187, 0.1); display: none;
+            transform: translate(-50%, -50%); 
+            background: linear-gradient(45deg, rgba(57, 197, 187, 0.2), rgba(139, 92, 246, 0.2)); 
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -35,43 +45,64 @@
             transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1), opacity 0.5s;
         }
         #loader.hidden { transform: translateY(-100%); opacity: 0; visibility: hidden; }
-        .loader-bar-container { width: 150px; height: 2px; background: rgba(57, 197, 187, 0.1); position: relative; overflow: hidden; border-radius: 2px; }
-        #loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--miku); transition: width 0.2s ease; }
-        .loader-percentage { font-family: monospace; font-size: 6rem; font-weight: 900; color: var(--miku); opacity: 0.15; position: absolute; bottom: 5%; right: 5%; line-height: 1; }
+        .loader-bar-container { width: 150px; height: 2px; background: rgba(255, 255, 255, 0.05); position: relative; overflow: hidden; border-radius: 2px; }
+        
+        /* LOADER: Chuyển sắc Xanh - Tím */
+        #loader-progress { 
+            position: absolute; left: 0; top: 0; height: 100%; width: 0%; 
+            background: linear-gradient(90deg, var(--miku), var(--violet)); 
+            transition: width 0.2s ease; 
+        }
+        .loader-percentage { font-family: monospace; font-size: 6rem; font-weight: 900; color: var(--miku); opacity: 0.1; position: absolute; bottom: 5%; right: 5%; line-height: 1; }
 
+        /* NAV LINK: Viền sáng hơn và hiệu ứng hover tím */
         .nav-link {
             transition: all 0.3s ease; padding: 6px 20px;
-            border-radius: 9999px; border: 1px solid rgba(57, 197, 187, 0.5); 
-            color: #ffffff; background: rgba(57, 197, 187, 0.1);
+            border-radius: 9999px; border: 1px solid rgba(57, 197, 187, 0.6); 
+            color: #ffffff; background: rgba(57, 197, 187, 0.15);
             font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
             display: inline-block;
         }
         .nav-link:hover { 
-            color: var(--miku) !important; border-color: var(--miku) !important;
-            background: rgba(57, 197, 187, 0.15); box-shadow: 0 0 15px rgba(57, 197, 187, 0.2);
+            color: white !important; border-color: var(--violet) !important;
+            background: linear-gradient(90deg, rgba(57, 197, 187, 0.2), rgba(139, 92, 246, 0.2));
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
 
+        /* CARD HOVER EFFECT: Viền đổi sang tím rực rỡ */
         .viewport-card {
             background: var(--glass); border: 1px solid var(--border); border-radius: 24px;
-            padding: 20px; transition: all 0.4s ease; backdrop-filter: blur(12px);
+            padding: 20px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(12px);
         }
+        .viewport-card:hover { 
+            border-color: var(--violet); 
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px -10px rgba(139, 92, 246, 0.4);
+        }
+
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; }
         
-        /* BACK TO TOP: ĐÃ XÓA BỎ HOÀN TOÀN HIỆU ỨNG HOVER VÀ CLICK */
         #backToTop { 
             position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; border-radius: 50%; 
             background: rgba(57, 197, 187, 0.1); border: 1px solid var(--border); color: var(--miku); 
             z-index: 100; display: flex; align-items: center; justify-content: center; 
-            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; backdrop-filter: blur(10px);
-            cursor: none !important; outline: none !important; -webkit-tap-highlight-color: transparent;
+            opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(10px);
+            cursor: none !important; outline: none !important;
         }
         #backToTop.show { opacity: 1; visibility: visible; }
-        /* Không có thêm trạng thái hover hay active để giữ nút tĩnh */
 
         .social-link { display: inline-block; transition: all 0.3s ease; color: #4a5d71; letter-spacing: 0.3em; }
-        .social-link:hover { color: var(--miku); text-shadow: 0 0 8px var(--miku); transform: translateY(-3px); }
+        .social-link:hover { color: var(--violet); text-shadow: 0 0 8px var(--violet); transform: translateY(-3px); }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* GRADIENT TEXT: Style dùng cho Header và Footer */
+        .gradient-text {
+            background: linear-gradient(90deg, var(--miku), var(--violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -111,8 +142,13 @@
         </div>
     </nav>
 
-    <header class="pt-56 pb-20 text-center">
-        <h1 class="text-5xl md:text-8xl font-black mb-4 uppercase italic tracking-tighter">GALLERY <span class="text-[#39c5bb]">3D</span></h1>
+    <header class="pt-56 pb-20 text-center px-4">
+        <h1 class="text-5xl md:text-8xl font-black mb-4 uppercase leading-tight tracking-tighter">
+            <span class="italic">GALLERY</span> 
+            <span class="gradient-text pr-2 md:pr-4">
+                <span class="italic">3D</span>
+            </span>
+        </h1>
         <p class="text-white/50 font-medium tracking-[0.5em] uppercase text-[9px] md:text-[11px]">Lưu trữ mô hình dự án cá nhân</p>
     </header>
 
@@ -120,8 +156,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full" id="main-grid"></div>
     </main>
 
-    <footer id="contact" class="py-32 text-center border-t border-[#39c5bb]/10 reveal">
-        <h3 class="text-xl font-black mb-10 text-[#39c5bb] italic">Let's work together</h3>
+    <footer id="contact" class="py-32 text-center border-t border-white/5 reveal">
+        <h3 class="text-xl font-black mb-10 gradient-text italic">Let's work together</h3>
         <p class="text-lg font-bold mb-2">phatvo.0401@gmail.com</p>
         <p class="text-gray-500 text-[11px] uppercase tracking-[0.2em] mb-12">038 477 2414 | CỦ CHI, TP. HỒ CHÍ MINH</p>
         <div class="flex justify-center gap-8 md:gap-16 mb-20 text-[10px] font-bold">
@@ -141,6 +177,7 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+        // CURSOR
         const cursor = document.getElementById('cursor-follower');
         document.addEventListener('mousemove', (e) => {
             if (window.innerWidth > 768) {
@@ -150,6 +187,7 @@
             }
         });
 
+        // LOADER LOGIC
         const loaderNum = document.getElementById('loader-num');
         const loaderProgress = document.getElementById('loader-progress');
         let progress = 0;
