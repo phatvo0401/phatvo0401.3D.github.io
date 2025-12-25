@@ -204,8 +204,6 @@
             const container = document.getElementById(id);
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 1000);
-            
-            // Cài đặt vị trí Camera để đạt góc 35 độ ngay từ đầu
             camera.position.set(0, 50, 75);
 
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -227,15 +225,14 @@
             controls.minDistance = 65; 
             controls.maxDistance = 150; 
             
-            // CỐ ĐỊNH TRỤC DỌC Ở GÓC 35 ĐỘ (0.96 rad)
-            const fixedAngle = 0.96;
-            controls.minPolarAngle = fixedAngle; 
-            controls.maxPolarAngle = fixedAngle;
+            // YÊU CẦU 1: CỐ ĐỊNH TRỤC DỌC Ở GÓC 35 ĐỘ
+            const angle35 = 0.96;
+            controls.minPolarAngle = angle35; 
+            controls.maxPolarAngle = angle35;
 
             new STLLoader().load(path, (geo) => {
-                // TỰ ĐỘNG CĂN CHỈNH MODEL VÀO CHÍNH GIỮA (CENTERING)
+                // YÊU CẦU 2: CĂN CHỈNH MODEL Ở CHÍNH GIỮA KHUNG
                 geo.computeBoundingBox();
-                geo.computeBoundingSphere();
                 const center = new THREE.Vector3();
                 geo.boundingBox.getCenter(center);
                 geo.translate(-center.x, -center.y, -center.z);
