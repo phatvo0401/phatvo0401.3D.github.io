@@ -16,11 +16,7 @@
             cursor: none !important; 
         }
 
-        /* PC: Ẩn chuột hệ thống trên các thành phần chính */
-        a, button, canvas, .viewport-card { cursor: none !important; }
-
-        /* GIỐNG 100%: NÚT BACK TO TOP SẼ DÙNG CON TRỎ MẶC ĐỊNH */
-        #backToTop { cursor: auto !important; }
+        a, button, canvas, .viewport-card, svg, span { cursor: none !important; }
 
         #cursor-follower {
             width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
@@ -61,17 +57,16 @@
         }
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; }
         
-        /* GIỐNG 100%: BACK TO TOP CSS */
+        /* BACK TO TOP: ĐÃ XÓA BỎ HOÀN TOÀN HIỆU ỨNG HOVER VÀ CLICK */
         #backToTop { 
             position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; border-radius: 50%; 
-            background: #050a09; 
-            border: 1px solid var(--miku); 
-            color: var(--miku); 
+            background: rgba(57, 197, 187, 0.1); border: 1px solid var(--border); color: var(--miku); 
             z-index: 100; display: flex; align-items: center; justify-content: center; 
-            opacity: 0; visibility: hidden; transition: 0.3s;
-            outline: none !important; -webkit-tap-highlight-color: transparent;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; backdrop-filter: blur(10px);
+            cursor: none !important; outline: none !important; -webkit-tap-highlight-color: transparent;
         }
         #backToTop.show { opacity: 1; visibility: visible; }
+        /* Không có thêm trạng thái hover hay active để giữ nút tĩnh */
 
         .social-link { display: inline-block; transition: all 0.3s ease; color: #4a5d71; letter-spacing: 0.3em; }
         .social-link:hover { color: var(--miku); text-shadow: 0 0 8px var(--miku); transform: translateY(-3px); }
@@ -111,7 +106,6 @@
                 <span id="digital-clock" class="text-[8px] font-mono text-gray-500 tracking-wider">00:00:00 AM</span>
             </div>
         </div>
-        
         <div class="flex items-center justify-end flex-grow">
             <a href="https://phatvo0401.github.io/#home" class="nav-link">Back to home</a>
         </div>
@@ -147,7 +141,6 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // Xử lý chuột tùy chỉnh
         const cursor = document.getElementById('cursor-follower');
         document.addEventListener('mousemove', (e) => {
             if (window.innerWidth > 768) {
@@ -157,7 +150,6 @@
             }
         });
 
-        // Loader và Đồng hồ (giữ nguyên logic)
         const loaderNum = document.getElementById('loader-num');
         const loaderProgress = document.getElementById('loader-progress');
         let progress = 0;
@@ -259,7 +251,6 @@
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // BACK TO TOP LOGIC: GIỐNG 100%
         const btt = document.getElementById('backToTop');
         window.onscroll = () => { if (window.scrollY > 500) btt.classList.add('show'); else btt.classList.remove('show'); };
         btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
