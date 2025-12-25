@@ -140,7 +140,6 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- MOUSE CURSOR ---
         const cursor = document.getElementById('cursor-follower');
         document.addEventListener('mousemove', (e) => {
             cursor.style.display = 'block';
@@ -148,7 +147,6 @@
             cursor.style.top = e.clientY + 'px';
         });
 
-        // --- LOADER ---
         const loaderNum = document.getElementById('loader-num');
         const loaderProgress = document.getElementById('loader-progress');
         let progress = 0;
@@ -162,13 +160,11 @@
             loaderNum.innerText = progress.toString().padStart(2, '0');
         }, 60);
 
-        // --- CLOCK ---
         function updateClock() { 
             document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' }).toUpperCase(); 
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // --- 3D ENGINE ---
         const myModels = [
             { id: 'm1', name: 'Con Cụt', file: 'model.stl', desc: '3D Artist: AI' },
             { id: 'm2', name: 'Con Gót', file: 'model2.stl', desc: '3D Artist: AI' },
@@ -190,8 +186,8 @@
             const rotationGroup = new THREE.Group();
             scene.add(rotationGroup);
 
-            // --- POLAR GRID MẬT ĐỘ CAO (GIỮ NGUYÊN) ---
-            const circleGrid = new THREE.PolarGridHelper(35, 32, 20, 64, 0x39c5bb, 0x111111);
+            // --- ĐIỀU CHỈNH GRID: 24 đường quạt, 12 vòng tròn ---
+            const circleGrid = new THREE.PolarGridHelper(35, 24, 12, 64, 0x39c5bb, 0x111111);
             circleGrid.position.y = -22; 
             circleGrid.material.opacity = 0.2; 
             circleGrid.material.transparent = true;
