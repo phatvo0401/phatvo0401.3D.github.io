@@ -12,10 +12,15 @@
         body { 
             font-family: 'Lexend', sans-serif; background-color: #050a09; 
             background-image: radial-gradient(at 0% 0%, rgba(57, 197, 187, 0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(57, 197, 187, 0.05) 0px, transparent 50%);
-            background-attachment: fixed; color: #e6f7f6; overflow-x: hidden; cursor: none !important;
+            background-attachment: fixed; color: #e6f7f6; overflow-x: hidden; 
+            cursor: none !important; 
         }
 
+        /* PC: Ẩn chuột hệ thống trên các thành phần chính */
         a, button, canvas, .viewport-card { cursor: none !important; }
+
+        /* GIỐNG 100%: NÚT BACK TO TOP SẼ DÙNG CON TRỎ MẶC ĐỊNH */
+        #backToTop { cursor: auto !important; }
 
         #cursor-follower {
             width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
@@ -56,17 +61,15 @@
         }
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; }
         
-        /* BACK TO TOP: ĐÃ CẬP NHẬT LỚP MỜ XANH (GLASSMORPHISM) */
+        /* GIỐNG 100%: BACK TO TOP CSS */
         #backToTop { 
             position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; border-radius: 50%; 
-            background: rgba(5, 10, 9, 0.4); 
+            background: #050a09; 
             border: 1px solid var(--miku); 
             color: var(--miku); 
             z-index: 100; display: flex; align-items: center; justify-content: center; 
             opacity: 0; visibility: hidden; transition: 0.3s;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             outline: none !important; -webkit-tap-highlight-color: transparent;
-            cursor: auto !important; 
         }
         #backToTop.show { opacity: 1; visibility: visible; }
 
@@ -108,6 +111,7 @@
                 <span id="digital-clock" class="text-[8px] font-mono text-gray-500 tracking-wider">00:00:00 AM</span>
             </div>
         </div>
+        
         <div class="flex items-center justify-end flex-grow">
             <a href="https://phatvo0401.github.io/#home" class="nav-link">Back to home</a>
         </div>
@@ -143,6 +147,7 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+        // Xử lý chuột tùy chỉnh
         const cursor = document.getElementById('cursor-follower');
         document.addEventListener('mousemove', (e) => {
             if (window.innerWidth > 768) {
@@ -152,6 +157,7 @@
             }
         });
 
+        // Loader và Đồng hồ (giữ nguyên logic)
         const loaderNum = document.getElementById('loader-num');
         const loaderProgress = document.getElementById('loader-progress');
         let progress = 0;
@@ -253,6 +259,7 @@
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+        // BACK TO TOP LOGIC: GIỐNG 100%
         const btt = document.getElementById('backToTop');
         window.onscroll = () => { if (window.scrollY > 500) btt.classList.add('show'); else btt.classList.remove('show'); };
         btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
