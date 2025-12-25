@@ -11,10 +11,9 @@
         body { font-family: 'Lexend', sans-serif; background-color: #050a09; color: #e6f7f6; margin: 0; overflow-x: hidden; }
         
         .miku-text { color: var(--miku); text-shadow: 0 0 15px rgba(57, 197, 187, 0.4); }
-        .glass-card { background: var(--glass); border: 1px solid var(--border); backdrop-filter: blur(10px); border-radius: 24px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .glass-card:hover { border-color: var(--miku); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(57, 197, 187, 0.1); }
+        .glass-card { background: var(--glass); border: 1px solid var(--border); backdrop-filter: blur(10px); border-radius: 24px; transition: all 0.4s ease; overflow: hidden; }
+        .glass-card:hover { border-color: var(--miku); transform: translateY(-5px); }
         
-        /* Hiệu ứng lưới */
         .archive-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -27,13 +26,11 @@
         .model-viewport {
             width: 100%;
             aspect-ratio: 1/1;
-            background: radial-gradient(circle, rgba(57, 197, 187, 0.05) 0%, transparent 70%);
-            border-radius: 20px 20px 0 0;
+            background: radial-gradient(circle, rgba(57, 197, 187, 0.08) 0%, transparent 75%);
             cursor: grab;
         }
         .model-viewport:active { cursor: grabbing; }
 
-        /* Tùy chỉnh thanh cuộn */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #050a09; }
         ::-webkit-scrollbar-thumb { background: var(--miku); border-radius: 10px; }
@@ -47,26 +44,26 @@
     </nav>
 
     <section class="pt-40 pb-10 flex flex-col items-center">
-        <h1 class="text-5xl md:text-7xl font-black mb-4 uppercase tracking-tighter">THE <span class="miku-text">ARCHIVE</span></h1>
-        <p class="text-gray-500 tracking-[0.4em] uppercase text-[10px]">Lưu trữ và trình diễn mô hình 3D kỹ thuật số</p>
+        <h1 class="text-5xl md:text-7xl font-black mb-4 uppercase tracking-tighter italic">THE <span class="miku-text">ARCHIVE</span></h1>
+        <p class="text-gray-500 tracking-[0.4em] uppercase text-[10px]">Kho lưu trữ mô hình kỹ thuật số chuyên biệt</p>
     </section>
 
     <main class="flex justify-center pb-20">
         <div class="archive-grid">
             
             <div class="glass-card">
-                <div class="model-viewport" id="model-container-1"></div>
-                <div class="p-5">
-                    <h3 class="font-bold text-sm uppercase miku-text">Cyber Skull v.1</h3>
-                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">ZBrush / STL / 450k Polys</p>
+                <div class="model-viewport" id="container-1"></div>
+                <div class="p-6 border-t border-white/5 bg-black/20">
+                    <h3 class="font-bold text-sm uppercase miku-text tracking-widest">Model #01</h3>
+                    <p class="text-[9px] text-gray-500 mt-1 uppercase">Sculpted in ZBrush / STL</p>
                 </div>
             </div>
 
             <div class="glass-card">
-                <div class="model-viewport" id="model-container-2"></div>
-                <div class="p-5">
-                    <h3 class="font-bold text-sm uppercase miku-text">Mecha Armor Part</h3>
-                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider">Hard Surface / STL</p>
+                <div class="model-viewport" id="container-2"></div>
+                <div class="p-6 border-t border-white/5 bg-black/20">
+                    <h3 class="font-bold text-sm uppercase miku-text tracking-widest">Model #02</h3>
+                    <p class="text-[9px] text-gray-500 mt-1 uppercase">Hard Surface Modeling</p>
                 </div>
             </div>
 
@@ -80,52 +77,66 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        function init3D(containerId, modelPath) {
-            const container = document.getElementById(containerId);
+        function create3DViewer(id, path) {
+            const container = document.getElementById(id);
+            if(!container) return;
+
             const scene = new THREE.Scene();
-            
             const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-            camera.position.set(0, 0, 100);
+            camera.position.set(0, 30, 80); // Góc nhìn từ trên xuống giống web chính
 
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
-            // Ánh sáng
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            // Setup Ánh sáng chuẩn Studio của bạn
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
             scene.add(ambientLight);
-            const spotLight = new THREE.SpotLight(0x39c5bb, 5);
-            spotLight.position.set(50, 50, 50);
-            scene.add(spotLight);
 
-            // Điều khiển xoay bằng chuột
+            const mainLight = new THREE.DirectionalLight(0x39c5bb, 2.5);
+            mainLight.position.set(20, 50, 30);
+            scene.add(mainLight);
+
+            const blueLight = new THREE.PointLight(0x39c5bb, 1.5);
+            blueLight.position.set(-20, -10, 20);
+            scene.add(blueLight);
+
+            // Điều khiển
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
-            controls.enableZoom = false; // Tắt zoom để không bị loạn khi cuộn trang
+            controls.dampingFactor = 0.05;
+            controls.enableZoom = false;
 
             const loader = new STLLoader();
-            loader.load(modelPath, (geometry) => {
+            loader.load(path, (geometry) => {
                 geometry.center();
                 const material = new THREE.MeshPhongMaterial({ 
-                    color: 0x39c5bb, 
-                    specular: 0x111111, 
-                    shininess: 100 
+                    color: 0x39c5bb,
+                    specular: 0x222222,
+                    shininess: 60,
+                    transparent: true,
+                    opacity: 0.9
                 });
+                
                 const mesh = new THREE.Mesh(geometry, material);
                 
-                // Tự động căn chỉnh kích thước
+                // Trục xoay chéo đặc trưng
+                mesh.rotation.x = -Math.PI / 2;
+                mesh.rotation.z = Math.PI / 4;
+
+                // Tự động căn quy mô
                 const box = new THREE.Box3().setFromObject(mesh);
                 const size = box.getSize(new THREE.Vector3());
                 const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 55 / maxDim;
+                const scale = 50 / maxDim;
                 mesh.scale.set(scale, scale, scale);
                 
                 scene.add(mesh);
 
                 function animate() {
                     requestAnimationFrame(animate);
-                    mesh.rotation.y += 0.005; // Tự động xoay nhẹ
+                    mesh.rotation.z += 0.005; // Xoay quanh trục đứng
                     controls.update();
                     renderer.render(scene, camera);
                 }
@@ -133,16 +144,16 @@
             });
 
             window.addEventListener('resize', () => {
-                renderer.setSize(container.clientWidth, container.clientHeight);
-                camera.aspect = 1;
+                const width = container.clientWidth;
+                renderer.setSize(width, width);
                 camera.updateProjectionMatrix();
             });
         }
 
-        // --- CẤU HÌNH FILE CỦA BẠN TẠI ĐÂY ---
-        // 'model-container-1' là ID ở trên, 'file1.stl' là tên file bạn up lên github
-        init3D('model-container-1', 'file1.stl'); 
-        init3D('model-container-2', 'file2.stl');
+        // ĐỐI CHIẾU FILE STL CỦA BẠN TẠI ĐÂY
+        create3DViewer('container-1', 'file1.stl');
+        create3DViewer('container-2', 'file2.stl');
+
     </script>
 </body>
 </html>
