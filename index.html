@@ -7,12 +7,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --miku: #39c5bb; --glass: rgba(255, 255, 255, 0.03); --border: rgba(57, 197, 187, 0.2); }
+        /* ĐỔI SANG TÔNG MÀU NỮ TÍNH: HỒNG & TÍM */
+        :root { 
+            --miku: #ff85a2; /* Hồng chính */
+            --glass: rgba(255, 255, 255, 0.02); 
+            --border: rgba(255, 133, 162, 0.2); 
+        }
         
         body { 
-            font-family: 'Lexend', sans-serif; background-color: #050a09; 
-            background-image: radial-gradient(at 0% 0%, rgba(57, 197, 187, 0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(57, 197, 187, 0.05) 0px, transparent 50%);
-            background-attachment: fixed; color: #e6f7f6; overflow-x: hidden; 
+            font-family: 'Lexend', sans-serif; 
+            background-color: #0a0506; /* Nền tối ánh đỏ */
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(255, 133, 162, 0.1) 0px, transparent 50%), 
+                radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.07) 0px, transparent 50%);
+            background-attachment: fixed; color: #fff0f3; overflow-x: hidden; 
             cursor: none !important; 
         }
 
@@ -21,7 +29,8 @@
         #cursor-follower {
             width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
             position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999;
-            transform: translate(-50%, -50%); background: rgba(57, 197, 187, 0.1); display: none;
+            transform: translate(-50%, -50%); background: rgba(255, 133, 162, 0.15); display: none;
+            box-shadow: 0 0 15px rgba(255, 133, 162, 0.3);
         }
 
         @media (max-width: 768px) {
@@ -31,24 +40,24 @@
 
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050a09; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #0a0506; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1), opacity 0.5s;
         }
         #loader.hidden { transform: translateY(-100%); opacity: 0; visibility: hidden; }
-        .loader-bar-container { width: 150px; height: 2px; background: rgba(57, 197, 187, 0.1); position: relative; overflow: hidden; border-radius: 2px; }
+        .loader-bar-container { width: 150px; height: 2px; background: rgba(255, 133, 162, 0.1); position: relative; overflow: hidden; border-radius: 2px; }
         #loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--miku); transition: width 0.2s ease; }
         .loader-percentage { font-family: monospace; font-size: 6rem; font-weight: 900; color: var(--miku); opacity: 0.15; position: absolute; bottom: 5%; right: 5%; line-height: 1; }
 
         .nav-link {
             transition: all 0.3s ease; padding: 6px 20px;
-            border-radius: 9999px; border: 1px solid rgba(57, 197, 187, 0.5); 
-            color: #ffffff; background: rgba(57, 197, 187, 0.1);
+            border-radius: 9999px; border: 1px solid rgba(255, 133, 162, 0.3); 
+            color: #ffffff; background: rgba(255, 133, 162, 0.05);
             font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
             display: inline-block;
         }
         .nav-link:hover { 
             color: var(--miku) !important; border-color: var(--miku) !important;
-            background: rgba(57, 197, 187, 0.15); box-shadow: 0 0 15px rgba(57, 197, 187, 0.2);
+            background: rgba(255, 133, 162, 0.1); box-shadow: 0 0 15px rgba(255, 133, 162, 0.2);
         }
 
         .viewport-card {
@@ -57,18 +66,16 @@
         }
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; }
         
-        /* BACK TO TOP: ĐÃ XÓA BỎ HOÀN TOÀN HIỆU ỨNG HOVER VÀ CLICK */
         #backToTop { 
             position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; border-radius: 50%; 
-            background: rgba(57, 197, 187, 0.1); border: 1px solid var(--border); color: var(--miku); 
+            background: rgba(255, 133, 162, 0.1); border: 1px solid var(--border); color: var(--miku); 
             z-index: 100; display: flex; align-items: center; justify-content: center; 
-            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; backdrop-filter: blur(10px);
+            opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(10px);
             cursor: none !important; outline: none !important; -webkit-tap-highlight-color: transparent;
         }
         #backToTop.show { opacity: 1; visibility: visible; }
-        /* Không có thêm trạng thái hover hay active để giữ nút tĩnh */
 
-        .social-link { display: inline-block; transition: all 0.3s ease; color: #4a5d71; letter-spacing: 0.3em; }
+        .social-link { display: inline-block; transition: all 0.3s ease; color: #714a56; letter-spacing: 0.3em; }
         .social-link:hover { color: var(--miku); text-shadow: 0 0 8px var(--miku); transform: translateY(-3px); }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
@@ -81,7 +88,7 @@
     <div id="loader">
         <div class="flex flex-col items-center">
             <div class="flex items-center text-lg tracking-tighter mb-4">
-                <span class="font-black text-[#39c5bb] mr-1.5 uppercase">VTP</span>
+                <span class="font-black text-[#ff85a2] mr-1.5 uppercase">VTP</span>
                 <span class="font-light text-white opacity-90">3D Archive</span>
             </div>
             <div class="loader-bar-container"><div id="loader-progress"></div></div>
@@ -89,19 +96,19 @@
         <div id="loader-num" class="loader-percentage">00</div>
     </div>
 
-    <nav class="fixed w-full z-50 py-3 px-4 md:px-10 flex justify-between items-center bg-[#050a09]/70 backdrop-blur-xl border-b border-white/5">
+    <nav class="fixed w-full z-50 py-3 px-4 md:px-10 flex justify-between items-center bg-[#0a0506]/70 backdrop-blur-xl border-b border-white/5">
         <div class="flex flex-col flex-shrink-0 mr-6">
             <div class="text-md md:text-lg flex items-center tracking-tighter">
-                <span class="font-black text-[#39c5bb] mr-1.5 uppercase">VTP</span>
+                <span class="font-black text-[#ff85a2] mr-1.5 uppercase">VTP</span>
                 <span class="font-light text-white opacity-90">Design</span>
             </div>
             <div class="flex flex-col space-y-0.5 mt-1">
                 <div class="items-center space-x-1.5 hidden md:flex">
                     <div class="relative flex h-1.5 w-1.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#39c5bb] opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#39c5bb]"></span>
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff85a2] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#ff85a2]"></span>
                     </div>
-                    <span class="text-[8px] font-bold uppercase tracking-widest text-gray-400">Available</span>
+                    <span class="text-[8px] font-bold uppercase tracking-widest text-pink-300/50">Available</span>
                 </div>
                 <span id="digital-clock" class="text-[8px] font-mono text-gray-500 tracking-wider">00:00:00 AM</span>
             </div>
@@ -112,16 +119,16 @@
     </nav>
 
     <header class="pt-56 pb-20 text-center">
-        <h1 class="text-5xl md:text-8xl font-black mb-4 uppercase italic tracking-tighter">GALLERY <span class="text-[#39c5bb]">3D</span></h1>
-        <p class="text-white/50 font-medium tracking-[0.5em] uppercase text-[9px] md:text-[11px]">Lưu trữ mô hình dự án cá nhân</p>
+        <h1 class="text-5xl md:text-8xl font-black mb-4 uppercase italic tracking-tighter text-white">GALLERY <span class="text-[#ff85a2]">3D</span></h1>
+        <p class="text-white/50 font-medium tracking-[0.5em] uppercase text-[9px] md:text-[11px]">Personal Archive Storage</p>
     </header>
 
     <main class="flex justify-center pb-40 px-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full" id="main-grid"></div>
     </main>
 
-    <footer id="contact" class="py-32 text-center border-t border-[#39c5bb]/10 reveal">
-        <h3 class="text-xl font-black mb-10 text-[#39c5bb] italic">Let's work together</h3>
+    <footer id="contact" class="py-32 text-center border-t border-[#ff85a2]/10 reveal">
+        <h3 class="text-xl font-black mb-10 text-[#ff85a2] italic">Let's work together</h3>
         <p class="text-lg font-bold mb-2">phatvo.0401@gmail.com</p>
         <p class="text-gray-500 text-[11px] uppercase tracking-[0.2em] mb-12">038 477 2414 | CỦ CHI, TP. HỒ CHÍ MINH</p>
         <div class="flex justify-center gap-8 md:gap-16 mb-20 text-[10px] font-bold">
@@ -169,10 +176,9 @@
         setInterval(updateClock, 1000); updateClock();
 
         const myModels = [
-            { id: 'm1', name: 'Con Cụt', file: 'model.stl', desc: '3D Artist: AI' },
-            { id: 'm2', name: 'Con Gót', file: 'model2.stl', desc: '3D Artist: AI' },
-            { id: 'm3', name: 'Project 03', file: 'model.stl', desc: '3D Artist: AI' },
-            { id: 'm4', name: 'Project 04', file: 'model.stl', desc: '3D Artist: AI' }
+            { id: 'm1', name: 'Mô Hình 01', file: 'model.stl', desc: '3D Artist: VTP' },
+            { id: 'm2', name: 'Mô Hình 02', file: 'model2.stl', desc: '3D Artist: VTP' },
+            { id: 'm3', name: 'Mô Hình 03', file: 'model.stl', desc: '3D Artist: VTP' }
         ];
 
         function init3D(id, path) {
@@ -189,15 +195,17 @@
             const rotationGroup = new THREE.Group();
             scene.add(rotationGroup);
 
-            const circleGrid = new THREE.PolarGridHelper(35, 24, 12, 64, 0x39c5bb, 0x111111);
+            // GRID MÀU HỒNG NHẠT
+            const circleGrid = new THREE.PolarGridHelper(35, 24, 12, 64, 0xff85a2, 0x221111);
             circleGrid.position.y = -22; 
-            circleGrid.material.opacity = 0.2; 
+            circleGrid.material.opacity = 0.15; 
             circleGrid.material.transparent = true;
             rotationGroup.add(circleGrid);
 
-            const sun = new THREE.DirectionalLight(0x39c5bb, 2.5);
+            // ÁNH SÁNG HỒNG ẤM
+            const sun = new THREE.DirectionalLight(0xff85a2, 2);
             sun.position.set(20, 50, 20);
-            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.6));
+            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.7));
 
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
@@ -210,7 +218,11 @@
 
             new STLLoader().load(path, (geo) => {
                 geo.center(); 
-                const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: 0x39c5bb, specular: 0x111111, shininess: 80 }));
+                const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ 
+                    color: 0xff85a2, 
+                    specular: 0x221111, 
+                    shininess: 100 
+                }));
                 mesh.rotation.x = -Math.PI / 2;
                 
                 const box = new THREE.Box3().setFromObject(mesh);
@@ -241,7 +253,7 @@
         myModels.forEach(m => {
             const card = document.createElement('div');
             card.className = 'viewport-card';
-            card.innerHTML = `<div class="three-container" id="${m.id}"></div><div class="mt-8 flex justify-between items-end"><div><h3 class="font-black text-xl uppercase tracking-tighter text-[#39c5bb]">${m.name}</h3><p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">${m.desc}</p></div><div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full italic">VTP 3D</div></div>`;
+            card.innerHTML = `<div class="three-container" id="${m.id}"></div><div class="mt-8 flex justify-between items-end"><div><h3 class="font-black text-xl uppercase tracking-tighter text-[#ff85a2]">${m.name}</h3><p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">${m.desc}</p></div><div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full italic">VTP 3D</div></div>`;
             grid.appendChild(card);
             init3D(m.id, m.file);
         });
