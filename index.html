@@ -64,7 +64,7 @@
             position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; 
             background: rgba(57, 197, 187, 0.1); border: 1px solid var(--miku); color: var(--miku); 
             z-index: 100; display: flex; align-items: center; justify-content: center; 
-            opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(10px); font-weight: bold;
+            opacity: 0; visibility: visible; transition: 0.3s; backdrop-filter: blur(10px); font-weight: bold;
         }
         #backToTop.show { opacity: 1; visibility: visible; }
         #backToTop:hover { background: var(--miku); color: #050a09; }
@@ -140,7 +140,6 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- MOUSE CURSOR ---
         const cursor = document.getElementById('cursor-follower');
         document.addEventListener('mousemove', (e) => {
             cursor.style.display = 'block';
@@ -148,7 +147,6 @@
             cursor.style.top = e.clientY + 'px';
         });
 
-        // --- LOADER ---
         const loaderNum = document.getElementById('loader-num');
         const loaderProgress = document.getElementById('loader-progress');
         let progress = 0;
@@ -162,13 +160,11 @@
             loaderNum.innerText = progress.toString().padStart(2, '0');
         }, 60);
 
-        // --- CLOCK ---
         function updateClock() { 
             document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' }).toUpperCase(); 
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // --- 3D ENGINE ---
         const myModels = [
             { id: 'm1', name: 'Con Cụt', file: 'model.stl', desc: '3D Artist: AI' },
             { id: 'm2', name: 'Con Gót', file: 'model2.stl', desc: '3D Artist: AI' },
@@ -187,16 +183,28 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
-            // --- TẠO NHÓM ĐỂ QUAY CHUNG ---
             const rotationGroup = new THREE.Group();
             scene.add(rotationGroup);
 
-            // Polar Grid (Đế) - Add vào nhóm quay
-            const circleGrid = new THREE.PolarGridHelper(35, 16, 8, 64, 0x39c5bb, 0x111111);
-            circleGrid.position.y = -22; 
-            circleGrid.material.opacity = 0.2; 
-            circleGrid.material.transparent = true;
-            rotationGroup.add(circleGrid);
+            // --- GRID MẬT ĐỘ CAO (GIỐNG WEB CHÍNH) ---
+            const mainGrid = new THREE.GridHelper(80, 40, 0x39c5bb, 0x111111);
+            mainGrid.position.y = -22;
+            mainGrid.material.opacity = 0.15;
+            mainGrid.material.transparent = true;
+            rotationGroup.add(mainGrid);
+
+            // --- SCANNING LINE (GIỐNG WEB CHÍNH) ---
+            const lineGeo = new THREE.PlaneGeometry(100, 0.5);
+            const lineMat = new THREE.MeshBasicMaterial({ 
+                color: 0x39c5bb, 
+                transparent: true, 
+                opacity: 0.5, 
+                side: THREE.DoubleSide 
+            });
+            const scanLine = new THREE.Mesh(lineGeo, lineMat);
+            scanLine.rotation.x = Math.PI / 2;
+            scanLine.position.y = 30; // Bắt đầu từ trên cao
+            scene.add(scanLine);
 
             const sun = new THREE.DirectionalLight(0x39c5bb, 2.5);
             sun.position.set(20, 50, 20);
@@ -206,21 +214,15 @@
             controls.enableDamping = true;
             controls.minDistance = 65; 
             controls.maxDistance = 150; 
-            
             const fixedAngle = 0.96; 
             controls.minPolarAngle = fixedAngle;
             controls.maxPolarAngle = fixedAngle;
 
             new STLLoader().load(path, (geo) => {
-                // 1. Căn tâm hình học cho Geometry
                 geo.center(); 
-
                 const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: 0x39c5bb, specular: 0x111111, shininess: 80 }));
-                
-                // 2. Xoay mesh để model đứng thẳng (STL thường ngược trục)
                 mesh.rotation.x = -Math.PI / 2;
                 
-                // 3. Tính toán Scale dựa trên kích thước thực tế
                 const box = new THREE.Box3().setFromObject(mesh);
                 const size = new THREE.Vector3();
                 box.getSize(size);
@@ -228,20 +230,23 @@
                 const scale = 48 / maxDim;
                 mesh.scale.set(scale, scale, scale);
 
-                // 4. CĂN CHỈNH VÀO GIỮA KHUNG
-                // Tính lại box sau khi đã scale để đưa trọng tâm về (0,0,0)
                 const centeredBox = new THREE.Box3().setFromObject(mesh);
                 const center = new THREE.Vector3();
                 centeredBox.getCenter(center);
-                mesh.position.sub(center); // Dịch chuyển mesh để tâm trùng với tâm của Group
+                mesh.position.sub(center);
 
-                // Thêm mesh vào nhóm quay chung với đế
                 rotationGroup.add(mesh);
                 
                 function animate() { 
                     requestAnimationFrame(animate); 
-                    // Quay cả Group trên trục Y thay vì quay mesh lẻ loi
                     rotationGroup.rotation.y += 0.005; 
+
+                    // --- ANIMATE SCANNING LINE ---
+                    scanLine.position.y -= 0.4;
+                    if (scanLine.position.y < -25) scanLine.position.y = 35;
+                    // Làm mờ line khi ở quá cao hoặc quá thấp
+                    scanLine.material.opacity = Math.sin((scanLine.position.y + 25) / 60 * Math.PI) * 0.5;
+
                     controls.update(); 
                     renderer.render(scene, camera); 
                 }
