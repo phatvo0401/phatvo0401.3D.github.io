@@ -16,18 +16,16 @@
         
         body { 
             font-family: 'Lexend', sans-serif; background-color: #050a09; 
-            /* KẾT HỢP XANH MIKU VÀ TÍM ĐIỆN VÀO NỀN */
             background-image: 
                 radial-gradient(at 0% 0%, rgba(57, 197, 187, 0.1) 0px, transparent 50%), 
                 radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.07) 0px, transparent 50%);
             background-attachment: fixed; color: #e6f7f6; overflow-x: hidden; 
             cursor: none !important; 
-            /* CHẶN BÔI ĐEN CHỮ TOÀN TRANG */
             user-select: none;
             -webkit-user-select: none;
         }
 
-        a, button, canvas, .viewport-card, svg, span { cursor: none !important; }
+        a, button, canvas, .viewport-card, svg, span, video, img { cursor: none !important; }
 
         #cursor-follower {
             width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
@@ -50,7 +48,6 @@
         #loader.hidden { transform: translateY(-100%); opacity: 0; visibility: hidden; }
         .loader-bar-container { width: 150px; height: 2px; background: rgba(255, 255, 255, 0.05); position: relative; overflow: hidden; border-radius: 2px; }
         
-        /* LOADER: Chuyển sắc Xanh - Tím */
         #loader-progress { 
             position: absolute; left: 0; top: 0; height: 100%; width: 0%; 
             background: linear-gradient(90deg, var(--miku), var(--violet)); 
@@ -58,7 +55,6 @@
         }
         .loader-percentage { font-family: monospace; font-size: 6rem; font-weight: 900; color: var(--miku); opacity: 0.1; position: absolute; bottom: 5%; right: 5%; line-height: 1; }
 
-        /* NAV LINK: Viền sáng hơn và hiệu ứng hover tím */
         .nav-link {
             transition: all 0.3s ease; padding: 6px 20px;
             border-radius: 9999px; border: 1px solid rgba(57, 197, 187, 0.6); 
@@ -72,7 +68,6 @@
             box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
 
-        /* CARD HOVER EFFECT: Viền đổi sang tím rực rỡ */
         .viewport-card {
             background: var(--glass); border: 1px solid var(--border); border-radius: 24px;
             padding: 20px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(12px);
@@ -83,7 +78,8 @@
             box-shadow: 0 15px 30px -10px rgba(139, 92, 246, 0.4);
         }
 
-        .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; }
+        .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+        .media-content { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
         
         #backToTop { 
             position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; border-radius: 50%; 
@@ -99,7 +95,6 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* GRADIENT TEXT: Style dùng cho Header và Footer */
         .gradient-text {
             background: linear-gradient(90deg, var(--miku), var(--violet));
             -webkit-background-clip: text;
@@ -209,11 +204,12 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
+        // DANH SÁCH DỮ LIỆU (STL, IMAGE, VIDEO)
         const myModels = [
-            { id: 'm1', name: 'Con Cụt', file: 'model.stl', desc: '3D Artist: AI' },
-            { id: 'm2', name: 'Con Gót', file: 'model2.stl', desc: '3D Artist: AI' },
-            { id: 'm3', name: 'Project 03', file: 'Dau.stl', desc: '3D Artist: AI' },
-            { id: 'm4', name: 'Project 04', file: 'squirtle.stl', desc: '3D Artist: AI' }
+            { id: 'm1', name: 'Con Cụt', file: 'model.stl', type: 'stl', desc: '3D Artist: AI' },
+            { id: 'm2', name: 'Con Gót', file: 'image.jpg', type: 'image', desc: 'Graphic Design: VTP' },
+            { id: 'm3', name: 'Motion Video', file: 'demo.mp4', type: 'video', desc: 'Motion Artist: VTP' },
+            { id: 'm4', name: 'Squirtle 3D', file: 'squirtle.stl', type: 'stl', desc: '3D Artist: AI' }
         ];
 
         function init3D(id, path) {
@@ -253,19 +249,16 @@
                 geo.center(); 
                 const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: 0x39c5bb, specular: 0x111111, shininess: 80 }));
                 mesh.rotation.x = -Math.PI / 2;
-                
                 const box = new THREE.Box3().setFromObject(mesh);
                 const size = new THREE.Vector3();
                 box.getSize(size);
                 const maxDim = Math.max(size.x, size.y, size.z);
                 const scale = 48 / maxDim;
                 mesh.scale.set(scale, scale, scale);
-
                 const centeredBox = new THREE.Box3().setFromObject(mesh);
                 const center = new THREE.Vector3();
                 centeredBox.getCenter(center);
                 mesh.position.sub(center);
-
                 rotationGroup.add(mesh);
                 
                 function animate() { 
@@ -282,9 +275,22 @@
         myModels.forEach(m => {
             const card = document.createElement('div');
             card.className = 'viewport-card';
-            card.innerHTML = `<div class="three-container" id="${m.id}"></div><div class="mt-8 flex justify-between items-end"><div><h3 class="font-black text-xl uppercase tracking-tighter text-[#39c5bb]">${m.name}</h3><p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">${m.desc}</p></div><div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full italic">VTP 3D</div></div>`;
+            
+            let displayHTML = '';
+            if(m.type === 'image') {
+                displayHTML = `<div class="three-container"><img src="${m.file}" class="media-content" draggable="false"></div>`;
+            } else if(m.type === 'video') {
+                displayHTML = `<div class="three-container"><video src="${m.file}" class="media-content" autoplay loop muted playsinline disablePictureInPicture contenteditable="false"></video></div>`;
+            } else {
+                displayHTML = `<div class="three-container" id="${m.id}"></div>`;
+            }
+
+            card.innerHTML = `${displayHTML}<div class="mt-8 flex justify-between items-end"><div><h3 class="font-black text-xl uppercase tracking-tighter text-[#39c5bb]">${m.name}</h3><p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">${m.desc}</p></div><div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full italic">VTP ARCHIVE</div></div>`;
             grid.appendChild(card);
-            init3D(m.id, m.file);
+            
+            if(m.type === 'stl' || !m.type) {
+                init3D(m.id, m.file);
+            }
         });
 
         const observer = new IntersectionObserver((entries) => {
@@ -297,28 +303,16 @@
         btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
     </script>
     <script>
-    // 1. Chặn chuột phải (Toàn diện)
+    // BẢO MẬT TỔNG HỢP
     document.addEventListener('contextmenu', event => event.preventDefault());
-
-    // 2. Chặn các phím tắt nhà phát triển (DevTools, View Source)
     document.onkeydown = function(e) {
-        if (
-            e.keyCode == 123 || // F12
-            (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || // Ctrl+Shift+I hoặc J
-            (e.ctrlKey && e.keyCode == 85) // Ctrl+U (View Source)
-        ) {
+        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {
             return false;
         }
     };
-
-    // 3. Chặn kéo thả hình ảnh/canvas (Ngăn việc nắm kéo ảnh ra desktop để lưu)
     document.addEventListener('dragstart', event => event.preventDefault());
-
-    // 4. Chặn phím tắt Copy (Ctrl+C, Ctrl+X)
     document.addEventListener('copy', event => event.preventDefault());
     document.addEventListener('cut', event => event.preventDefault());
-</script>
+    </script>
 </body>
 </html>
-
-
