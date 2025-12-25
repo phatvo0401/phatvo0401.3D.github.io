@@ -12,7 +12,7 @@
         
         .miku-text { color: var(--miku); text-shadow: 0 0 15px rgba(57, 197, 187, 0.4); }
         
-        /* Cấu trúc khung giống web chính */
+        /* Khung bao ngoài giống web chính */
         .viewport-box {
             background: var(--glass);
             border: 1px solid var(--border);
@@ -22,11 +22,12 @@
             transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
         .viewport-box:hover {
-            background: rgba(57, 197, 187, 0.05);
+            background: rgba(57, 197, 187, 0.08);
             border-color: var(--miku);
             transform: translateY(-10px);
         }
 
+        /* Khung chứa model bên trong */
         .sub-viewport {
             width: 100%;
             aspect-ratio: 1/1;
@@ -35,9 +36,9 @@
             border-radius: 25px;
             overflow: hidden;
             position: relative;
+            box-shadow: inset 0 0 50px rgba(57, 197, 187, 0.05);
         }
 
-        /* Lưới Grid */
         .archive-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -47,7 +48,6 @@
             max-width: 1400px;
         }
 
-        /* Nút VIEW ALL kiểu mới */
         .btn-back {
             padding: 10px 25px;
             border: 1px solid var(--border);
@@ -77,40 +77,47 @@
 
     <header class="pt-48 pb-10 text-center">
         <h1 class="text-6xl md:text-8xl font-black mb-6 uppercase tracking-tighter italic">GALLERY <span class="miku-text">3D</span></h1>
-        <div class="h-[1px] w-20 bg-miku mx-auto mb-6"></div>
-        <p class="text-white/30 tracking-[0.5em] uppercase text-[9px]">Digital Sculpting & Hard Surface Collection</p>
+        <div class="h-[1px] w-20 bg-miku mx-auto mb-6 opacity-50"></div>
+        <p class="text-white/30 tracking-[0.5em] uppercase text-[9px]">Lưu trữ mô hình kỹ thuật số chuyên biệt</p>
     </header>
 
     <main class="flex justify-center pb-32">
         <div class="archive-grid">
             
             <div class="viewport-box">
-                <div class="sub-viewport" id="model-1"></div>
+                <div class="sub-viewport" id="m1"></div>
                 <div class="mt-8 flex justify-between items-end">
                     <div>
                         <h3 class="font-black text-xl uppercase tracking-tighter miku-text">Project 01</h3>
-                        <p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">Sculpted in ZBrush / STL</p>
+                        <p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">ZBrush / STL Format</p>
                     </div>
-                    <div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full uppercase">
-                        High-Poly
-                    </div>
+                    <div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full uppercase italic">VTP 3D</div>
                 </div>
             </div>
 
             <div class="viewport-box">
-                <div class="sub-viewport" id="model-2"></div>
+                <div class="sub-viewport" id="m2"></div>
                 <div class="mt-8 flex justify-between items-end">
                     <div>
                         <h3 class="font-black text-xl uppercase tracking-tighter miku-text">Project 02</h3>
-                        <p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">Hard Surface Modeling</p>
+                        <p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">ZBrush / STL Format</p>
                     </div>
-                    <div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full uppercase">
-                        Ready to Print
-                    </div>
+                    <div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full uppercase italic">VTP 3D</div>
                 </div>
             </div>
 
+            <div class="viewport-box">
+                <div class="sub-viewport" id="m3"></div>
+                <div class="mt-8 flex justify-between items-end">
+                    <div>
+                        <h3 class="font-black text-xl uppercase tracking-tighter miku-text">Project 03</h3>
+                        <p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">ZBrush / STL Format</p>
+                    </div>
+                    <div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full uppercase italic">VTP 3D</div>
+                </div>
             </div>
+
+        </div>
     </main>
 
     <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
@@ -124,18 +131,22 @@
             const container = document.getElementById(id);
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-            camera.position.set(0, 40, 80);
+            camera.position.set(0, 35, 75); // Góc nghiêng nhìn từ trên xuống
 
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
-            // Light
-            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-            const light1 = new THREE.DirectionalLight(0x39c5bb, 2);
-            light1.position.set(10, 20, 10);
-            scene.add(light1);
+            // Lighting setup
+            scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+            const sun = new THREE.DirectionalLight(0x39c5bb, 2.5);
+            sun.position.set(10, 25, 10);
+            scene.add(sun);
+            
+            const fill = new THREE.PointLight(0x39c5bb, 1.2);
+            fill.position.set(-15, -10, 15);
+            scene.add(fill);
 
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
@@ -147,34 +158,40 @@
                 const material = new THREE.MeshPhongMaterial({ 
                     color: 0x39c5bb, 
                     specular: 0x111111, 
-                    shininess: 100 
+                    shininess: 80,
+                    transparent: true,
+                    opacity: 0.95
                 });
                 const mesh = new THREE.Mesh(geometry, material);
                 
-                // Trục xoay chéo giống web chính
+                // Trục xoay chéo signature
                 mesh.rotation.x = -Math.PI / 2;
                 mesh.rotation.z = Math.PI / 4;
 
                 const box = new THREE.Box3().setFromObject(mesh);
                 const size = box.getSize(new THREE.Vector3());
-                const scale = 50 / Math.max(size.x, size.y, size.z);
+                const scale = 55 / Math.max(size.x, size.y, size.z);
                 mesh.scale.set(scale, scale, scale);
                 
                 scene.add(mesh);
 
                 function animate() {
                     requestAnimationFrame(animate);
-                    mesh.rotation.z += 0.005;
+                    mesh.rotation.z += 0.005; // Xoay chậm
                     controls.update();
                     renderer.render(scene, camera);
                 }
                 animate();
+            }, undefined, (error) => {
+                console.error("Lỗi tải file STL:", error);
             });
         }
 
-        // THAY TÊN FILE STL CỦA BẠN VÀO ĐÂY
-        init3D('model-1', 'file1.stl');
-        init3D('model-2', 'file2.stl');
+        // TẤT CẢ TRỎ VỀ CÙNG 1 FILE model.stl
+        init3D('m1', 'model.stl');
+        init3D('m2', 'model.stl');
+        init3D('m3', 'model.stl');
+
     </script>
 </body>
 </html>
