@@ -23,16 +23,18 @@
             color: #e6f7f6; overflow-x: hidden;
         }
 
-        /* --- CURSOR SYSTEM --- */
+        /* --- FIX CURSOR SYSTEM --- */
         @media (pointer: fine) {
-            body, a, button, .viewport-card { cursor: none !important; }
+            body, a, button, .viewport-card, canvas { cursor: none !important; }
             #cursor { display: block; }
         }
         #cursor {
             width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
-            position: fixed; pointer-events: none; z-index: 9999;
-            transition: transform 0.1s ease-out; transform: translate(-50%, -50%);
+            position: fixed; pointer-events: none; z-index: 10001;
+            transition: transform 0.15s ease-out, background 0.3s; 
+            transform: translate(-50%, -50%);
             display: none;
+            background: rgba(57, 197, 187, 0.05);
         }
 
         /* --- LOADER ĐỒNG BỘ TUYỆT ĐỐI --- */
@@ -45,18 +47,36 @@
         #loader.hidden { transform: translateY(-100%); opacity: 0; visibility: hidden; }
         .loader-bar-container { width: 150px; height: 2px; background: rgba(57, 197, 187, 0.1); position: relative; overflow: hidden; border-radius: 2px; }
         #loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--miku); transition: width 0.2s ease; }
-        .loader-percentage { font-family: monospace; font-size: 5rem; font-weight: 900; color: rgba(57, 197, 187, 0.3); position: absolute; bottom: 5%; right: 5%; }
+        
+        /* Chỉnh số đếm giống web chính */
+        .loader-percentage { 
+            font-family: monospace; 
+            font-size: 6rem; 
+            font-weight: 900; 
+            color: var(--miku); 
+            opacity: 0.15; 
+            position: absolute; 
+            bottom: 5%; 
+            right: 5%; 
+            line-height: 1;
+        }
 
         /* --- NAV LINK STYLE --- */
         .nav-link {
-            transition: all 0.3s ease; padding: 6px 20px;
-            border-radius: 9999px; border: 1px solid rgba(57, 197, 187, 0.5); 
-            color: var(--miku); background: rgba(57, 197, 187, 0.1);
+            transition: all 0.3s ease; padding: 8px 25px;
+            border-radius: 9999px; border: 1px solid rgba(57, 197, 187, 0.4); 
+            color: var(--miku); background: rgba(57, 197, 187, 0.05);
             font-size: 10px; font-weight: 900; letter-spacing: 2px;
+            text-transform: uppercase;
         }
-        .nav-link:hover { background: var(--miku); color: #050a09; box-shadow: 0 0 15px var(--miku); }
+        .nav-link:hover { 
+            background: var(--miku); 
+            color: #050a09; 
+            box-shadow: 0 0 20px rgba(57, 197, 187, 0.4); 
+            transform: scale(1.05);
+        }
 
-        /* --- 3D GRID --- */
+        /* --- UI ELEMENTS --- */
         .miku-text { color: var(--miku); }
         .viewport-card {
             background: var(--glass); border: 1px solid var(--border); border-radius: 24px;
@@ -66,12 +86,15 @@
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; }
         
         #backToTop { 
-            position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; border-radius: 50%; 
+            position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; 
             background: rgba(57, 197, 187, 0.1); border: 1px solid var(--miku); color: var(--miku); 
             z-index: 100; display: flex; align-items: center; justify-content: center; 
             opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(5px);
+            font-weight: bold;
         }
         #backToTop.show { opacity: 1; visibility: visible; }
+        #backToTop:hover { background: var(--miku); color: #050a09; }
+
         .social-link { display: inline-block; transition: all 0.3s ease; color: #4a5d71; letter-spacing: 0.3em; }
         .social-link:hover { color: var(--miku); text-shadow: 0 0 8px var(--miku); transform: translateY(-3px); }
     </style>
@@ -108,7 +131,7 @@
                 <span id="digital-clock" class="text-[8px] font-mono text-gray-500 tracking-wider">00:00:00 AM</span>
             </div>
         </div>
-        <a href="https://[username].github.io/" class="nav-link">BACK TO HOME</a>
+        <a href="https://phatvo0401.github.io/" class="nav-link">Back to home</a>
     </nav>
 
     <header class="pt-48 pb-10 text-center">
@@ -126,9 +149,9 @@
         <p class="text-lg font-bold mb-2">phatvo.0401@gmail.com</p>
         <p class="text-gray-500 text-[11px] uppercase tracking-[0.2em] mb-12">038 477 2414 | CỦ CHI, TP. HỒ CHÍ MINH</p>
         <div class="flex justify-center gap-8 md:gap-16 mb-20 text-[10px] font-bold">
-            <a href="#" class="social-link">FACEBOOK</a>
-            <a href="#" class="social-link">INSTAGRAM</a>
-            <a href="#" class="social-link">BEHANCE</a>
+            <a href="https://www.facebook.com/phatvo.0401/" target="_blank" class="social-link">FACEBOOK</a>
+            <a href="https://www.instagram.com/phatvo.0401/" target="_blank" class="social-link">INSTAGRAM</a>
+            <a href="https://www.behance.net/phtthnh42" target="_blank" class="social-link">BEHANCE</a>
         </div>
         <div class="pt-8 border-t border-white/5">
             <p class="text-slate-600 text-[9px] uppercase tracking-[0.5em] leading-loose">© 2025 VTP Design — 3D Archive <br>All Rights Reserved — Created by Võ Thành Phát</p>
@@ -153,8 +176,17 @@
         // --- UI LOGIC ---
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+            requestAnimationFrame(() => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+        });
+
+        // Hiệu ứng hover cho con trỏ
+        const activeElements = 'a, button, .viewport-card';
+        document.querySelectorAll(activeElements).forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.style.transform = 'translate(-50%, -50%) scale(2.5)');
+            el.addEventListener('mouseleave', () => cursor.style.transform = 'translate(-50%, -50%) scale(1)');
         });
 
         const loaderProgress = document.getElementById('loader-progress');
@@ -168,7 +200,7 @@
             }
             loaderProgress.style.width = progress + '%';
             loaderNum.innerText = progress.toString().padStart(2, '0');
-        }, 80);
+        }, 60);
 
         function updateClock() { 
             document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' }).toUpperCase(); 
@@ -191,9 +223,11 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
-            // GRID HÌNH TRÒN DƯỚI CHÂN
+            // GRID HÌNH TRÒN DƯỚI CHÂN (POLAR GRID)
             const circleGrid = new THREE.PolarGridHelper(35, 16, 8, 64, 0x39c5bb, 0x111111);
-            circleGrid.position.y = -20; circleGrid.material.opacity = 0.2; circleGrid.material.transparent = true;
+            circleGrid.position.y = -20; 
+            circleGrid.material.opacity = 0.2; 
+            circleGrid.material.transparent = true;
             scene.add(circleGrid);
 
             const sun = new THREE.DirectionalLight(0x39c5bb, 2);
@@ -202,7 +236,8 @@
 
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
-            controls.minPolarAngle = Math.PI / 3; controls.maxPolarAngle = Math.PI / 3;
+            controls.minPolarAngle = Math.PI / 3; 
+            controls.maxPolarAngle = Math.PI / 3;
 
             new STLLoader().load(path, (geo) => {
                 geo.center();
@@ -228,7 +263,15 @@
         myModels.forEach(m => {
             const card = document.createElement('div');
             card.className = 'viewport-card';
-            card.innerHTML = `<div class="three-container" id="${m.id}"></div><div class="mt-8 flex justify-between items-end"><div><h3 class="font-black text-xl uppercase tracking-tighter miku-text">${m.name}</h3><p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">${m.desc}</p></div><div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full italic">VTP 3D</div></div>`;
+            card.innerHTML = `
+                <div class="three-container" id="${m.id}"></div>
+                <div class="mt-8 flex justify-between items-end">
+                    <div>
+                        <h3 class="font-black text-xl uppercase tracking-tighter miku-text">${m.name}</h3>
+                        <p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">${m.desc}</p>
+                    </div>
+                    <div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full italic">VTP 3D</div>
+                </div>`;
             grid.appendChild(card);
             init3D(m.id, m.file);
         });
