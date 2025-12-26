@@ -40,6 +40,14 @@
         .scan-line { position: absolute; width: 100%; height: 1px; background: var(--miku); opacity: 0.1; top: 0; animation: scanMove 3s linear infinite; pointer-events: none; }
         @keyframes scanMove { 0% { top: 0%; } 100% { top: 100%; } }
 
+        /* TRANSFORM TOOLS */
+        .transform-controls { position: absolute; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 10; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .viewport-box:hover .transform-controls { opacity: 1; visibility: visible; }
+        .tool-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--miku); width: 32px; height: 32px; border-radius: 8px; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); transition: 0.2s; }
+        .tool-btn:hover { background: var(--miku); color: #000; box-shadow: 0 0 15px var(--miku); }
+        .tool-btn.reset { border-color: var(--violet); color: var(--violet); }
+        .tool-btn.reset:hover { background: var(--violet); color: white; box-shadow: 0 0 15px var(--violet); }
+
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .media-content { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
         
@@ -95,6 +103,13 @@
                     </div>
                 </div>
                 <div class="viewport-box" id="upload-viewport-container">
+                    <div class="transform-controls" id="transform-menu">
+                        <button class="tool-btn" onclick="rotateModel('x')" title="Xoay X">RX</button>
+                        <button class="tool-btn" onclick="rotateModel('y')" title="Xoay Y">RY</button>
+                        <button class="tool-btn" onclick="rotateModel('z')" title="Xoay Z">RZ</button>
+                        <button class="tool-btn reset" onclick="resetRotation()" title="Reset">RST</button>
+                    </div>
+                    
                     <div class="scan-line"></div>
                     <div class="absolute bottom-6 left-6 pointer-events-none"><div class="text-[9px] text-[#39c5bb] opacity-60 font-mono italic uppercase tracking-widest">LIVE_RENDER_ENGINE: SYNCED</div></div>
                 </div>
@@ -136,8 +151,7 @@
             group.add(grid);
         };
 
-        // GALLERY CONFIGURATION (image,video,stl)
-        // Thêm type: 'video' để trình chiếu video
+        // GALLERY CONFIGURATION
         const myModels = [
             { id: 'm1', name: 'Hình Dự án', file: 'avt.JPG', type: 'image' }, 
             { id: 'm2', name: 'Con Cụt', file: 'model.stl', type: 'stl' }, 
@@ -166,9 +180,10 @@
             });
         }
 
-        // UPLOAD ENGINE
+        // UPLOAD ENGINE & TRANSFORM LOGIC
         let upScene, upCam, upRen, upControls, upGroup, upMesh;
         const upContainer = document.getElementById('upload-viewport-container');
+        
         function initUploadEngine() {
             upScene = new THREE.Scene();
             upCam = new THREE.PerspectiveCamera(40, upContainer.clientWidth / upContainer.clientHeight, 0.1, 1000); upCam.position.set(0, 55, 80);
@@ -183,6 +198,19 @@
             const anim = () => { requestAnimationFrame(anim); upGroup.rotation.y += 0.005; upControls.update(); upRen.render(upScene, upCam); }; anim();
         }
         initUploadEngine();
+
+        // TRANSFORM FUNCTIONS (Đưa vào global để nút bấm gọi được)
+        window.rotateModel = (axis) => {
+            if(!upMesh) return;
+            const step = Math.PI / 2; // 90 độ
+            if(axis === 'x') upMesh.rotation.x += step;
+            if(axis === 'y') upMesh.rotation.y += step;
+            if(axis === 'z') upMesh.rotation.z += step;
+        };
+        window.resetRotation = () => {
+            if(!upMesh) return;
+            upMesh.rotation.set(-Math.PI/2, 0, 0); // Về mặc định
+        };
 
         document.getElementById('stl-input').onchange = (e) => {
             const file = e.target.files[0]; if(!file) return;
@@ -204,15 +232,9 @@
         const gridEl = document.getElementById('main-grid');
         myModels.forEach(m => {
             const card = document.createElement('div'); card.className = 'viewport-card';
-            let mediaHTML = '';
-            
-            if(m.type === 'stl') {
-                mediaHTML = `<div class="three-container" id="${m.id}"></div>`;
-            } else if(m.type === 'video') {
-                mediaHTML = `<div class="three-container"><video src="${m.file}" class="media-content" autoplay loop muted playsinline></video></div>`;
-            } else {
-                mediaHTML = `<div class="three-container"><img src="${m.file}" class="media-content"></div>`;
-            }
+            let mediaHTML = m.type === 'stl' ? `<div class="three-container" id="${m.id}"></div>` : 
+                           (m.type === 'video' ? `<div class="three-container"><video src="${m.file}" class="media-content" autoplay loop muted playsinline></video></div>` : 
+                           `<div class="three-container"><img src="${m.file}" class="media-content"></div>`);
 
             card.innerHTML = mediaHTML + `<div class="mt-8"><h3 class="font-black text-xl uppercase tracking-tighter text-[#39c5bb]">${m.name}</h3><p class="text-[8px] font-bold text-white/20 uppercase tracking-widest mt-1">VTP ARCHIVE</p></div>`;
             gridEl.appendChild(card); 
