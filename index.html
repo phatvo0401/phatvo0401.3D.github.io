@@ -136,11 +136,11 @@
             group.add(grid);
         };
 
-        // GALLERY
+        // GALLERY (image,stl.video)
         const myModels = [{ id: 'm1', name: 'Dự án', file: 'avt.JPG', type: 'image' }, 
                           { id: 'm2', name: 'Con Cụt', file: 'model.stl', type: 'stl' }, 
                           { id: 'm3', name: 'Con Gót', file: 'model2.stl', type: 'stl' },
-                          { id: 'm4', name: 'Con Gót', file: 'Demo.mp4', type: 'stl' }
+                          { id: 'm4', name: 'Con Gót', file: 'Demo.mp4', type: 'video' }
                          ];
         function initGallery3D(id, path) {
             const container = document.getElementById(id); if(!container) return;
@@ -214,3 +214,4 @@
     </script>
 </body>
 </html>
+
