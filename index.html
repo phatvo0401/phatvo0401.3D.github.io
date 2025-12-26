@@ -92,37 +92,67 @@
         </div>
 
         <div class="reveal mt-32">
-            <h3 class="section-subtitle">DỰ ÁN CỦA BẠN</h3>
-            <div class="upload-layout">
-                <div class="info-card-3d">
-                    <div><div class="hud-label mb-4">Designer Profile</div><p class="text-xs text-gray-400 leading-relaxed">Phân tích tệp tin STL cá nhân với thông số kỹ thuật thời gian thực.</p></div>
-                    <div class="space-y-4">
-                        <div class="hud-label">Technical Stats</div>
-                        <div class="text-[11px] border-b border-white/5 pb-2 flex justify-between"><span class="text-gray-500">Geometry</span><span id="poly-count" class="text-[#39c5bb]">N/A</span></div>
-                        <div class="text-[11px] flex justify-between"><span class="text-gray-500">Axis Sync</span><span class="text-[#39c5bb]">Auto-Vertical</span></div>
-                    </div>
+    <h3 class="section-subtitle">3D INTERACTIVE PLAYGROUND <span class="text-[10px] opacity-50 ml-2 font-light">| KHÔNG GIAN TRẢI NGHIỆM</span></h3>
+    <div class="upload-layout">
+        <div class="info-card-3d">
+            <div>
+                <div class="hud-label mb-4">Interactive Lab</div>
+                <p class="text-[11px] text-gray-400 leading-relaxed mb-2">
+                    Chào mừng bạn! Đây là nơi bạn có thể trực tiếp trải nghiệm công nghệ render thời gian thực của mình.
+                </p>
+                <p class="text-[10px] text-gray-500 italic">
+                    Welcome! Feel free to test your own designs using my real-time rendering engine.
+                </p>
+            </div>
+            <div class="space-y-4">
+                <div class="hud-label">Technical Analysis</div>
+                <div class="text-[11px] border-b border-white/5 pb-2 flex justify-between">
+                    <span class="text-gray-500">Poly Count</span>
+                    <span id="poly-count" class="text-[#39c5bb]">Awaiting...</span>
                 </div>
-                <div class="viewport-box" id="upload-viewport-container">
-                    <div class="transform-controls" id="transform-menu">
-                        <button class="tool-btn" onclick="rotateModel('x')" title="Xoay X">RX</button>
-                        <button class="tool-btn" onclick="rotateModel('y')" title="Xoay Y">RY</button>
-                        <button class="tool-btn" onclick="rotateModel('z')" title="Xoay Z">RZ</button>
-                        <button class="tool-btn reset" onclick="resetRotation()" title="Reset">RST</button>
-                    </div>
-                    
-                    <div class="scan-line"></div>
-                    <div class="absolute bottom-6 left-6 pointer-events-none"><div class="text-[9px] text-[#39c5bb] opacity-60 font-mono italic uppercase tracking-widest">LIVE_RENDER_ENGINE: SYNCED</div></div>
-                </div>
-                <div class="info-card-3d">
-                    <div><div class="hud-label mb-4">Project Info</div><p class="text-xs text-gray-100 font-bold uppercase" id="model-name-upload">No File Selected</p><p class="text-[10px] text-gray-500 mt-2 italic leading-relaxed">Tải lên file .STL để kiểm tra cấu trúc mô hình.</p></div>
-                    <div class="space-y-4">
-                        <label for="stl-input" class="btn-outline-miku">TẢI LÊN FILE .STL</label>
-                        <input type="file" id="stl-input" accept=".stl" class="hidden">
-                        <div class="text-[9px] text-center text-gray-600 uppercase tracking-widest">Orbit Active: 0° - 40°</div>
-                    </div>
+                <div class="text-[11px] flex justify-between">
+                    <span class="text-gray-500">Security</span>
+                    <span class="text-[#39c5bb]">Local Processed</span>
                 </div>
             </div>
         </div>
+
+        <div class="viewport-box" id="upload-viewport-container">
+            <div class="transform-controls" id="transform-menu">
+                <button class="tool-btn" onclick="rotateModel('x')" title="Rotate X">RX</button>
+                <button class="tool-btn" onclick="rotateModel('y')" title="Rotate Y">RY</button>
+                <button class="tool-btn" onclick="rotateModel('z')" title="Rotate Z">RZ</button>
+                <button class="tool-btn reset" onclick="resetRotation()" title="Reset Orientation">RST</button>
+            </div>
+            <div class="scan-line" id="main-scan-line"></div>
+            <div class="absolute bottom-6 left-6 pointer-events-none">
+                <div class="text-[9px] text-[#39c5bb] opacity-60 font-mono italic uppercase tracking-widest text-shadow-sm">
+                    STATUS: READY FOR INPUT
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card-3d">
+            <div>
+                <div class="hud-label mb-4">Model Info</div>
+                <p class="text-xs text-gray-100 font-bold uppercase truncate" id="model-name-upload">No file selected</p>
+                <p class="text-[10px] text-gray-500 mt-2 leading-relaxed">
+                    Hỗ trợ tệp định dạng .STL. Tối ưu nhất cho các mô hình in 3D hoặc cơ khí.
+                </p>
+                <p class="text-[9px] text-gray-600 italic mt-1">
+                    Supports .STL format. Optimized for 3D printing and mechanical parts.
+                </p>
+            </div>
+            <div class="space-y-4">
+                <label for="stl-input" class="btn-outline-miku">UPLOAD YOUR MODEL</label>
+                <input type="file" id="stl-input" accept=".stl" class="hidden">
+                <p class="text-[9px] text-center text-gray-600 uppercase tracking-widest leading-tight">
+                    Privacy Guaranteed:<br>Files are not uploaded to server
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
     </main>
 
     <button id="backToTop">↑</button>
@@ -249,5 +279,6 @@
     </script>
 </body>
 </html>
+
 
 
