@@ -25,7 +25,7 @@
             -webkit-user-select: none;
         }
 
-        a, button, canvas, .viewport-card, svg, span, video, img { cursor: none !important; }
+        a, button, canvas, .viewport-card, svg, span, video, img, label { cursor: none !important; }
 
         #cursor-follower {
             width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%;
@@ -37,7 +37,7 @@
 
         @media (max-width: 768px) {
             #cursor-follower { display: none !important; }
-            body, a, button, canvas, .viewport-card { cursor: auto !important; }
+            body, a, button, canvas, .viewport-card, label { cursor: auto !important; }
         }
 
         #loader {
@@ -78,6 +78,57 @@
             box-shadow: 0 15px 30px -10px rgba(139, 92, 246, 0.4);
         }
 
+        /* Yêu cầu: Nút tải file phong cách Line-art Miku -> Violet */
+        .btn-outline-miku {
+            background: transparent;
+            border: 1.5px solid var(--miku);
+            color: var(--miku);
+            font-weight: 800;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            text-align: center;
+            display: block;
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-outline-miku:hover {
+            border-color: var(--violet);
+            color: #ffffff;
+            background: rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5), inset 0 0 10px rgba(139, 92, 246, 0.2);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .portfolio-grid-3d {
+            display: grid; grid-template-columns: 1fr; gap: 20px;
+            max-width: 1200px; margin: 0 auto; height: auto;
+        }
+        @media (min-width: 1024px) {
+            .portfolio-grid-3d { grid-template-columns: 280px 1fr 280px; height: 500px; }
+        }
+        .info-card-3d {
+            background: var(--glass); border: 1px solid rgba(57, 197, 187, 0.1);
+            border-radius: 15px; padding: 24px; backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .viewport-box {
+            position: relative; border-radius: 20px; border: 1px solid var(--border);
+            background: #000; overflow: hidden; min-height: 400px; touch-action: none;
+        }
+        .hud-label { font-size: 10px; color: var(--miku); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+        .scan-line {
+            position: absolute; width: 100%; height: 1px; background: var(--miku);
+            opacity: 0.1; top: 0; animation: scanMove 3s linear infinite; pointer-events: none;
+        }
+        @keyframes scanMove { 0% { top: 0%; } 100% { top: 100%; } }
+
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
         .media-content { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
         
@@ -100,6 +151,11 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: inline-block;
+        }
+
+        .section-subtitle {
+            font-size: 1.5rem; font-weight: 900; margin-bottom: 2rem; 
+            color: var(--miku); text-transform: uppercase; letter-spacing: -0.025em;
         }
     </style>
 </head>
@@ -150,8 +206,59 @@
         <p class="text-white/50 font-medium tracking-[0.5em] uppercase text-[9px] md:text-[11px]">Lưu trữ mô hình dự án cá nhân</p>
     </header>
 
-    <main class="flex justify-center pb-40 px-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full" id="main-grid"></div>
+    <main class="max-w-7xl mx-auto pb-40 px-6">
+        
+        <div class="reveal mb-12">
+            <h3 class="section-subtitle">TRÌNH CHIẾU</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full" id="main-grid"></div>
+        </div>
+
+        <div class="reveal mt-32">
+            <h3 class="section-subtitle">DỰ ÁN CỦA BẠN</h3>
+            
+            <div class="portfolio-grid-3d">
+                <div class="info-card-3d">
+                    <div>
+                        <div class="hud-label mb-4">Designer Profile</div>
+                        <p class="text-xs text-gray-400 leading-relaxed">Bộ công cụ hỗ trợ xem trước tệp tin STL cá nhân với đầy đủ thông số kỹ thuật thời gian thực.</p>
+                    </div>
+                    <div class="space-y-4 mt-8">
+                        <div class="hud-label">Technical Stats</div>
+                        <div class="text-[11px] border-b border-white/5 pb-2 flex justify-between">
+                            <span class="text-gray-500">Geometry</span>
+                            <span id="poly-count" class="text-[#39c5bb]">N/A</span>
+                        </div>
+                        <div class="text-[11px] flex justify-between">
+                            <span class="text-gray-500">Axis Sync</span>
+                            <span class="text-[#39c5bb]">Auto-Vertical</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="viewport-box" id="upload-viewport-container">
+                    <div class="scan-line"></div>
+                    <div class="absolute top-4 left-4 border-t border-l border-[#39c5bb]/40 w-4 h-4"></div>
+                    <div class="absolute bottom-4 right-4 border-b border-r border-[#39c5bb]/40 w-4 h-4"></div>
+                    <div class="absolute bottom-6 left-6 pointer-events-none">
+                        <div class="text-[9px] text-[#39c5bb] opacity-60 font-mono italic uppercase tracking-widest">LIVE_RENDER_ENGINE: 100% SYNC</div>
+                    </div>
+                </div>
+
+                <div class="info-card-3d">
+                    <div>
+                        <div class="hud-label mb-4">Project Info</div>
+                        <p class="text-xs text-gray-100 font-bold uppercase" id="model-name-upload">No File Selected</p>
+                        <p class="text-[10px] text-gray-500 mt-2 italic leading-relaxed">Tải lên file .STL để kiểm tra cấu trúc mô hình trong môi trường studio.</p>
+                    </div>
+                    <div class="space-y-4 mt-8">
+                        <label for="stl-input" class="btn-outline-miku">TẢI LÊN FILE .STL</label>
+                        <input type="file" id="stl-input" accept=".stl" class="hidden">
+                        <div class="text-[9px] text-center text-gray-600 uppercase tracking-widest">Orbit Axis: 0° - 40° Top</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <footer id="contact" class="py-32 text-center border-t border-white/5 reveal">
@@ -175,7 +282,7 @@
         import { STLLoader } from 'three/addons/loaders/STLLoader.js';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // CURSOR
+        // --- GLOBAL: CURSOR & CLOCK & LOADER ---
         const cursor = document.getElementById('cursor-follower');
         document.addEventListener('mousemove', (e) => {
             if (window.innerWidth > 768) {
@@ -185,7 +292,6 @@
             }
         });
 
-        // LOADER LOGIC
         const loaderNum = document.getElementById('loader-num');
         const loaderProgress = document.getElementById('loader-progress');
         let progress = 0;
@@ -204,7 +310,7 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // DANH SÁCH DỮ LIỆU (STL, IMAGE, VIDEO)
+        // --- SECTION: TRÌNH CHIẾU ---
         const myModels = [
             { id: 'm1', name: 'Dự án', file: 'avt.JPG', type: 'image', desc: '3D Artist:' },
             { id: 'm2', name: 'Con Cụt', file: 'model.stl', type: 'stl', desc: '3D Artist:' },
@@ -215,84 +321,135 @@
 
         function init3D(id, path) {
             const container = document.getElementById(id);
+            if(!container) return;
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 1000);
             camera.position.set(0, 55, 80);
-
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
-
             const rotationGroup = new THREE.Group();
             scene.add(rotationGroup);
-
             const circleGrid = new THREE.PolarGridHelper(35, 24, 12, 64, 0x39c5bb, 0x111111);
-            circleGrid.position.y = -22; 
-            circleGrid.material.opacity = 0.2; 
-            circleGrid.material.transparent = true;
+            circleGrid.position.y = -22; circleGrid.material.opacity = 0.2; circleGrid.material.transparent = true;
             rotationGroup.add(circleGrid);
-
-            const sun = new THREE.DirectionalLight(0x39c5bb, 2.5);
-            sun.position.set(20, 50, 20);
-            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.6));
-
+            scene.add(new THREE.DirectionalLight(0x39c5bb, 2.5).position.set(20, 50, 20), new THREE.AmbientLight(0xffffff, 0.6));
             const controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.enablePan = false; 
-            controls.minDistance = 65; 
-            controls.maxDistance = 150; 
-            const fixedAngle = 0.96; 
-            controls.minPolarAngle = fixedAngle;
-            controls.maxPolarAngle = fixedAngle;
+            controls.enableDamping = true; controls.enablePan = false; controls.minDistance = 65; controls.maxDistance = 150;
+            
+            // Cập nhật góc di chuyển trục dọc: 0 đến 40 độ (Pi/2 là 90 độ)
+            controls.minPolarAngle = Math.PI/2 - 0.7; // ~40 độ từ trên xuống
+            controls.maxPolarAngle = Math.PI/2;      // 0 độ (ngang tầm mắt)
 
             new STLLoader().load(path, (geo) => {
                 geo.center(); 
                 const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: 0x39c5bb, specular: 0x111111, shininess: 80 }));
                 mesh.rotation.x = -Math.PI / 2;
                 const box = new THREE.Box3().setFromObject(mesh);
-                const size = new THREE.Vector3();
-                box.getSize(size);
-                const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 48 / maxDim;
+                const size = new THREE.Vector3(); box.getSize(size);
+                const scale = 48 / Math.max(size.x, size.y, size.z);
                 mesh.scale.set(scale, scale, scale);
                 const centeredBox = new THREE.Box3().setFromObject(mesh);
-                const center = new THREE.Vector3();
-                centeredBox.getCenter(center);
+                const center = new THREE.Vector3(); centeredBox.getCenter(center);
                 mesh.position.sub(center);
                 rotationGroup.add(mesh);
-                
-                function animate() { 
-                    requestAnimationFrame(animate); 
-                    rotationGroup.rotation.y += 0.005; 
-                    controls.update(); 
-                    renderer.render(scene, camera); 
-                }
+                function animate() { requestAnimationFrame(animate); rotationGroup.rotation.y += 0.005; controls.update(); renderer.render(scene, camera); }
                 animate();
-            });
+            }, undefined, (err) => console.log("File not found: " + path));
         }
 
         const grid = document.getElementById('main-grid');
         myModels.forEach(m => {
             const card = document.createElement('div');
             card.className = 'viewport-card';
-            
             let displayHTML = '';
-            if(m.type === 'image') {
-                displayHTML = `<div class="three-container"><img src="${m.file}" class="media-content" draggable="false"></div>`;
-            } else if(m.type === 'video') {
-                displayHTML = `<div class="three-container"><video src="${m.file}" class="media-content" autoplay loop muted playsinline disablePictureInPicture contenteditable="false"></video></div>`;
-            } else {
-                displayHTML = `<div class="three-container" id="${m.id}"></div>`;
-            }
-
+            if(m.type === 'image') displayHTML = `<div class="three-container"><img src="${m.file}" class="media-content" draggable="false"></div>`;
+            else if(m.type === 'video') displayHTML = `<div class="three-container"><video src="${m.file}" class="media-content" autoplay loop muted playsinline></video></div>`;
+            else displayHTML = `<div class="three-container" id="${m.id}"></div>`;
             card.innerHTML = `${displayHTML}<div class="mt-8 flex justify-between items-end"><div><h3 class="font-black text-xl uppercase tracking-tighter text-[#39c5bb]">${m.name}</h3><p class="text-[9px] text-white/40 uppercase tracking-widest mt-1">${m.desc}</p></div><div class="text-[8px] font-bold text-white/20 border border-white/10 px-3 py-1 rounded-full italic">VTP ARCHIVE</div></div>`;
             grid.appendChild(card);
-            
-            if(m.type === 'stl' || !m.type) {
-                init3D(m.id, m.file);
-            }
+            if(m.type === 'stl') init3D(m.id, m.file);
         });
+
+        // --- SECTION: DỰ ÁN CỦA BẠN ---
+        let upScene, upCam, upRen, upControls, upMesh, upRotationGroup;
+        const upContainer = document.getElementById('upload-viewport-container');
+
+        function initUploadEngine() {
+            upScene = new THREE.Scene();
+            upCam = new THREE.PerspectiveCamera(40, upContainer.clientWidth / upContainer.clientHeight, 0.1, 1000);
+            upCam.position.set(0, 55, 80); 
+
+            upRen = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            upRen.setSize(upContainer.clientWidth, upContainer.clientHeight);
+            upRen.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            upContainer.appendChild(upRen.domElement);
+
+            upRotationGroup = new THREE.Group();
+            upScene.add(upRotationGroup);
+
+            const circleGrid = new THREE.PolarGridHelper(35, 24, 12, 64, 0x39c5bb, 0x111111);
+            circleGrid.position.y = -22; circleGrid.material.opacity = 0.2; circleGrid.material.transparent = true;
+            upRotationGroup.add(circleGrid);
+
+            upScene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const sun = new THREE.DirectionalLight(0x39c5bb, 2.5);
+            sun.position.set(20, 50, 20);
+            upScene.add(sun);
+
+            upControls = new OrbitControls(upCam, upRen.domElement);
+            upControls.enableDamping = true;
+            upControls.enablePan = false; 
+            upControls.minDistance = 65; 
+            upControls.maxDistance = 150; 
+            
+            // Yêu cầu: Di chuyển trục dọc từ 0 đến 40 độ
+            upControls.minPolarAngle = Math.PI/2 - 0.7; // ~40 độ Top
+            upControls.maxPolarAngle = Math.PI/2;      // 0 độ (Ngang)
+
+            function anim() { 
+                requestAnimationFrame(anim); 
+                upRotationGroup.rotation.y += 0.005; 
+                upControls.update(); 
+                upRen.render(upScene, upCam); 
+            }
+            anim();
+        }
+        initUploadEngine();
+
+        document.getElementById('stl-input').onchange = (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            document.getElementById('model-name-upload').innerText = file.name.toUpperCase();
+            
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const geo = new STLLoader().parse(ev.target.result);
+                if(upMesh) upRotationGroup.remove(upMesh);
+                
+                geo.center();
+                upMesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: 0x39c5bb, specular: 0x111111, shininess: 80 }));
+                upMesh.rotation.x = -Math.PI / 2;
+                
+                const box = new THREE.Box3().setFromObject(upMesh);
+                const size = new THREE.Vector3(); box.getSize(size);
+                
+                if (size.y < size.z * 0.6) { upMesh.rotation.x = 0; }
+
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 48 / maxDim; 
+                upMesh.scale.set(scale, scale, scale);
+                
+                const centeredBox = new THREE.Box3().setFromObject(upMesh);
+                const center = new THREE.Vector3(); centeredBox.getCenter(center);
+                upMesh.position.sub(center);
+                
+                upRotationGroup.add(upMesh);
+                document.getElementById('poly-count').innerText = (geo.attributes.position.count / 3).toLocaleString() + ' Polys';
+            };
+            reader.readAsArrayBuffer(file);
+        };
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
@@ -304,12 +461,9 @@
         btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
     </script>
     <script>
-    // BẢO MẬT TỔNG HỢP
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.onkeydown = function(e) {
-        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {
-            return false;
-        }
+        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) return false;
     };
     document.addEventListener('dragstart', event => event.preventDefault());
     document.addEventListener('copy', event => event.preventDefault());
@@ -317,10 +471,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
