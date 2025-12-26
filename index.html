@@ -13,18 +13,15 @@
         #cursor-follower { width: 20px; height: 20px; border: 2px solid var(--miku); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); background: linear-gradient(45deg, rgba(57, 197, 187, 0.2), rgba(139, 92, 246, 0.2)); display: none; }
         @media (max-width: 768px) { #cursor-follower { display: none !important; } body, a, button, canvas, .viewport-card, label { cursor: auto !important; } }
         
-        /* LOADER */
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #050a09; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1), opacity 0.5s; }
         #loader.hidden { transform: translateY(-100%); opacity: 0; visibility: hidden; }
         .loader-bar-container { width: 150px; height: 2px; background: rgba(255, 255, 255, 0.05); position: relative; overflow: hidden; border-radius: 2px; }
         #loader-progress { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: linear-gradient(90deg, var(--miku), var(--violet)); transition: width 0.2s ease; }
         .loader-percentage { font-family: monospace; font-size: 6rem; font-weight: 900; color: var(--miku); opacity: 0.1; position: absolute; bottom: 5%; right: 5%; line-height: 1; }
 
-        /* NAV */
         .nav-link { transition: all 0.3s ease; padding: 6px 20px; border-radius: 9999px; border: 1px solid rgba(57, 197, 187, 0.6); color: #ffffff; background: rgba(57, 197, 187, 0.15); font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
         .nav-link:hover { color: white !important; border-color: var(--violet) !important; box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
 
-        /* GRID & LAYOUT */
         .gallery-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 24px; }
         @media (min-width: 768px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1024px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -46,7 +43,6 @@
         .three-container { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 16px; overflow: hidden; }
         .media-content { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
         
-        /* BACK TO TOP */
         #backToTop { position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; border-radius: 50%; background: rgba(57, 197, 187, 0.1); border: 1px solid var(--border); color: var(--miku); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(10px); }
         #backToTop.show { opacity: 1; visibility: visible; }
         #backToTop:hover { border-color: var(--violet); color: white; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
@@ -141,7 +137,11 @@
         };
 
         // GALLERY
-        const myModels = [{ id: 'm1', name: 'Dự án', file: 'avt.JPG', type: 'image' }, { id: 'm2', name: 'Con Cụt', file: 'model.stl', type: 'stl' }, { id: 'm3', name: 'Con Gót', file: 'model2.stl', type: 'stl' }];
+        const myModels = [{ id: 'm1', name: 'Dự án', file: 'avt.JPG', type: 'image' }, 
+                          { id: 'm2', name: 'Con Cụt', file: 'model.stl', type: 'stl' }, 
+                          { id: 'm3', name: 'Con Gót', file: 'model2.stl', type: 'stl' },
+                          { id: 'm4', name: 'Con Gót', file: 'Demo.mp4', type: 'stl' }
+                         ];
         function initGallery3D(id, path) {
             const container = document.getElementById(id); if(!container) return;
             const scene = new THREE.Scene();
@@ -152,12 +152,13 @@
             setupLighting(scene); createTechGrid(group);
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true; controls.enablePan = false;
-            controls.minDistance = 60; controls.maxDistance = 150; // Giới hạn thu phóng
+            controls.minDistance = 60; controls.maxDistance = 150;
             controls.minPolarAngle = Math.PI/2 - 0.7; controls.maxPolarAngle = Math.PI/2;
             new STLLoader().load(path, (geo) => {
                 const mesh = new THREE.Mesh(geo, getMikuMaterial()); geo.center();
                 const size = new THREE.Vector3(); new THREE.Box3().setFromObject(mesh).getSize(size);
-                const scale = 45 / Math.max(size.x, size.y, size.z); mesh.scale.set(scale, scale, scale);
+                // ĐỒNG BỘ: Sử dụng scale 50 giống phần upload để chất lượng hiển thị to rõ hơn
+                const scale = 50 / Math.max(size.x, size.y, size.z); mesh.scale.set(scale, scale, scale);
                 mesh.rotation.x = -Math.PI / 2; group.add(mesh);
                 const anim = () => { requestAnimationFrame(anim); group.rotation.y += 0.005; controls.update(); renderer.render(scene, camera); }; anim();
             });
@@ -175,7 +176,7 @@
             setupLighting(upScene); createTechGrid(upGroup);
             upControls = new OrbitControls(upCam, upRen.domElement); 
             upControls.enableDamping = true; upControls.enablePan = false;
-            upControls.minDistance = 60; upControls.maxDistance = 150; // Giới hạn thu phóng
+            upControls.minDistance = 60; upControls.maxDistance = 150;
             upControls.minPolarAngle = Math.PI/2 - 0.7; upControls.maxPolarAngle = Math.PI/2;
             const anim = () => { requestAnimationFrame(anim); upGroup.rotation.y += 0.005; upControls.update(); upRen.render(upScene, upCam); }; anim();
         }
@@ -205,12 +206,10 @@
             gridEl.appendChild(card); if(m.type === 'stl') initGallery3D(m.id, m.file);
         });
 
-        // BACK TO TOP LOGIC
         const btt = document.getElementById('backToTop');
         window.onscroll = () => { if (window.scrollY > 500) btt.classList.add('show'); else btt.classList.remove('show'); };
         btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // LOADER FINISH
         let p = 0; const li = setInterval(() => { p += 5; document.getElementById('loader-progress').style.width=p+'%'; document.getElementById('loader-num').innerText=p.toString().padStart(2,'0'); if(p>=100){ clearInterval(li); setTimeout(()=>document.getElementById('loader').classList.add('hidden'),500); } }, 50);
     </script>
 </body>
