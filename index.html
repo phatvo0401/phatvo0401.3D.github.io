@@ -87,18 +87,29 @@
 
     <main class="max-w-7xl mx-auto pb-40 px-6">
         <div class="reveal mb-32">
-            <h3 class="section-subtitle">TRÌNH CHIẾU</h3>
-            <div class="gallery-grid" id="main-grid"></div>
-        </div>
+    <h3 class="section-subtitle">
+        FEATURED PORTFOLIO 
+        <span class="text-[10px] opacity-40 ml-2 font-light tracking-widest">| DỰ ÁN TIÊU BIỂU</span>
+    </h3>
+    <p class="text-[11px] text-gray-400 mb-10 max-w-3xl leading-relaxed uppercase tracking-[0.1em]">
+        Hệ thống lưu trữ các sản phẩm 3D được thực hiện bởi <span class="text-[#39c5bb] font-bold">VTP Design Team</span>. Chúng tôi tập trung vào độ chính xác cao và trải nghiệm thị giác đột phá.
+        <br>
+        <span class="text-gray-600 italic normal-case tracking-normal">A curated collection of 3D projects by VTP Design Team, focusing on precision and immersive visual experiences.</span>
+    </p>
+    <div class="gallery-grid" id="main-grid"></div>
+</div>
 
         <div class="reveal mt-32">
-    <h3 class="section-subtitle">3D INTERACTIVE PLAYGROUND <span class="text-[10px] opacity-50 ml-2 font-light">| KHÔNG GIAN TRẢI NGHIỆM</span></h3>
+    <h3 class="section-subtitle">
+        3D INTERACTIVE PLAYGROUND 
+        <span class="text-[10px] opacity-40 ml-2 font-light tracking-widest">| KHÔNG GIAN TRẢI NGHIỆM</span>
+    </h3>
     <div class="upload-layout">
         <div class="info-card-3d">
             <div>
                 <div class="hud-label mb-4">Interactive Lab</div>
-                <p class="text-[11px] text-gray-400 leading-relaxed mb-2">
-                    Chào mừng bạn! Đây là nơi bạn có thể trực tiếp trải nghiệm công nghệ render thời gian thực của mình.
+                <p class="text-[11px] text-gray-300 leading-relaxed mb-2">
+                    Chào mừng bạn! Đây là nơi bạn có thể trực tiếp trải nghiệm công nghệ render thời gian thực của mình qua các tệp cá nhân.
                 </p>
                 <p class="text-[10px] text-gray-500 italic">
                     Welcome! Feel free to test your own designs using my real-time rendering engine.
@@ -107,12 +118,12 @@
             <div class="space-y-4">
                 <div class="hud-label">Technical Analysis</div>
                 <div class="text-[11px] border-b border-white/5 pb-2 flex justify-between">
-                    <span class="text-gray-500">Poly Count</span>
-                    <span id="poly-count" class="text-[#39c5bb]">Awaiting...</span>
+                    <span class="text-gray-500 uppercase tracking-tighter">Poly Count</span>
+                    <span id="poly-count" class="text-[#39c5bb] font-bold">Awaiting...</span>
                 </div>
                 <div class="text-[11px] flex justify-between">
-                    <span class="text-gray-500">Security</span>
-                    <span class="text-[#39c5bb]">Local Processed</span>
+                    <span class="text-gray-500 uppercase tracking-tighter">Security</span>
+                    <span class="text-[#39c5bb] font-bold">Local Processed</span>
                 </div>
             </div>
         </div>
@@ -126,28 +137,28 @@
             </div>
             <div class="scan-line" id="main-scan-line"></div>
             <div class="absolute bottom-6 left-6 pointer-events-none">
-                <div class="text-[9px] text-[#39c5bb] opacity-60 font-mono italic uppercase tracking-widest text-shadow-sm">
-                    STATUS: READY FOR INPUT
+                <div class="text-[9px] text-[#39c5bb] opacity-60 font-mono italic uppercase tracking-[0.2em]">
+                    SYSTEM STATUS: READY FOR INPUT
                 </div>
             </div>
         </div>
 
         <div class="info-card-3d">
             <div>
-                <div class="hud-label mb-4">Model Info</div>
-                <p class="text-xs text-gray-100 font-bold uppercase truncate" id="model-name-upload">No file selected</p>
-                <p class="text-[10px] text-gray-500 mt-2 leading-relaxed">
-                    Hỗ trợ tệp định dạng .STL. Tối ưu nhất cho các mô hình in 3D hoặc cơ khí.
+                <div class="hud-label mb-4">File Info</div>
+                <p class="text-xs text-white font-bold uppercase truncate" id="model-name-upload">No file selected</p>
+                <p class="text-[10px] text-gray-400 mt-2 leading-relaxed">
+                    Hỗ trợ định dạng .STL. Tối ưu nhất cho các mô hình in 3D hoặc chi tiết cơ khí.
                 </p>
                 <p class="text-[9px] text-gray-600 italic mt-1">
-                    Supports .STL format. Optimized for 3D printing and mechanical parts.
+                    Supports .STL format. Best for 3D printing and mechanical models.
                 </p>
             </div>
             <div class="space-y-4">
                 <label for="stl-input" class="btn-outline-miku">UPLOAD YOUR MODEL</label>
                 <input type="file" id="stl-input" accept=".stl" class="hidden">
                 <p class="text-[9px] text-center text-gray-600 uppercase tracking-widest leading-tight">
-                    Privacy Guaranteed:<br>Files are not uploaded to server
+                    Privacy Note: Files are NOT uploaded to our server
                 </p>
             </div>
         </div>
@@ -279,5 +290,6 @@
     </script>
 </body>
 </html>
+
 
 
