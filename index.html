@@ -256,8 +256,24 @@
         const getMikuMaterial = () => new THREE.MeshPhongMaterial({ color: 0x39c5bb, specular: 0x222222, shininess: 80 });
         const setupLighting = (scene) => {
             scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-            const sun = new THREE.DirectionalLight(0xffffff, 2.5); sun.position.set(20, 50, 20); scene.add(sun);
-            const fill = new THREE.PointLight(0x39c5bb, 1.2); fill.position.set(-20, -20, 20); scene.add(fill);
+            // 1. Ánh sáng môi trường (Làm sáng tổng thể các vùng tối, tăng cường độ lên 1.5 hoặc 2)
+const ambientLight = new THREE.AmbientLight(0xffffff, 2.0); 
+scene.add(ambientLight);
+
+// 2. Ánh sáng chính diện (Từ phía trước trên cao)
+const frontLight = new THREE.DirectionalLight(0xffffff, 2.5);
+frontLight.position.set(0, 50, 100);
+scene.add(frontLight);
+
+// 3. Ánh sáng ngược (Từ phía sau để làm rõ khối)
+const backLight = new THREE.DirectionalLight(0x39c5bb, 1.5); // Pha chút màu Miku cho nghệ thuật
+backLight.position.set(0, 50, -100);
+scene.add(backLight);
+
+// 4. Ánh sáng bổ trợ từ bên cạnh
+const sideLight = new THREE.DirectionalLight(0xffffff, 1.5);
+sideLight.position.set(100, 0, 0);
+scene.add(sideLight);
         };
         const createTechGrid = (group) => {
             const grid = new THREE.PolarGridHelper(35, 24, 12, 64, 0x39c5bb, 0x111111);
@@ -389,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
 </body>
 </html>
+
 
 
 
