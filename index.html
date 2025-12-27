@@ -257,7 +257,7 @@
         const setupLighting = (scene) => {
             scene.add(new THREE.AmbientLight(0xffffff, 0.7));
             // 1. Ánh sáng môi trường (Làm sáng tổng thể các vùng tối, tăng cường độ lên 1.5 hoặc 2)
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); 
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); 
 scene.add(ambientLight);
 
 // 2. Ánh sáng chính diện (Từ phía trước trên cao)
@@ -405,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
 </body>
 </html>
+
 
 
 
